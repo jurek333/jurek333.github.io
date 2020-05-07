@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[jurek333]</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/syntax.css" />
+  <link rel="stylesheet" href="/css/fonts.css" />
+  
+</head>
+
+<body>
+  <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Strona główna</a></li>
+      
+      <li><a href="/dziedziny/">Dziedziny</a></li>
+      
+      <li><a href="/zagadnienia/">Zagadnienia</a></li>
+      
+    </ul>
+  </nav>
+<div class="article-meta">
+    <h1><span class="date">2020 0503</span>
+        <span class="title">PS2</span></h1>
+    
+</div>
+
+<main>
+    <p>Wiecej tekstu lanego potrzebuję. By zobaczyć jak to będzie wyglądało, a nie tylko czy polskie znaki się wyświetlają.</p>
+<p>Standard przesyłu danych PS/2 jest idealny do obsługi klawiatury w systemach starszych. Komunikacja USB opiera się na zegarze znacznie szybszym niż zazwyczaj sam procesor. Dodatkowo Klawiature UBS trzeba by odpytywać co określony interwał czasu by sprawdzić czy jakis klawisz nie jest wciśnięty. Dla wolnych systemów możnaby przeoczyć zatem wciśnięcie klawisza. PS/2 zaś poza faktem że operuje w okolicach 6-16 kHz, to opiera się na przerwaniach. Gdy wciśniemy klawisz generujemy przerwanie, które zostanie przez CPU obsłużone (albo zignorowane, ale to już inna sprawa).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">met</span><span class="p">():</span>
+  <span class="k">pass</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Kiedy \(a \ne 0\) to:</p>
+<p>\(ax^2 + {bx + c \over 2y}\)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-asm" data-lang="asm">    <span class="c">; CPU Z80
+</span><span class="c"></span>    <span class="nf">OUTPUT</span> <span class="no">osa.bin</span>
+    <span class="nf">ORG</span> <span class="mi">0x0000</span>
+
+<span class="nl">init:</span>
+    <span class="c">; disable interrupts
+</span><span class="c"></span>    <span class="nf">di</span>
+    <span class="nf">ld</span> <span class="no">sp</span><span class="p">,</span> <span class="no">stack_top</span>
+    <span class="nf">ei</span>
+
+    <span class="nf">ld</span> <span class="no">a</span><span class="p">,</span> <span class="mi">0x48</span>
+    <span class="nf">out</span> <span class="mi">0x80</span><span class="p">,</span> <span class="no">a</span>
+    <span class="nf">ld</span> <span class="no">a</span><span class="p">,</span> <span class="mi">0x45</span>
+    <span class="nf">out</span> <span class="mi">0x80</span><span class="p">,</span> <span class="no">a</span>
+    <span class="nf">ld</span> <span class="no">a</span><span class="p">,</span> <span class="mi">0x4C</span>
+    <span class="nf">call</span> <span class="no">print_char</span>
+    <span class="nf">ld</span> <span class="no">a</span><span class="p">,</span> <span class="mi">0x4C</span>
+    <span class="nf">call</span> <span class="no">print_char</span>
+<span class="nl">main:</span>
+    <span class="nf">jp</span> <span class="no">$</span>
+
+<span class="nl">print_char:</span>
+    <span class="nf">out</span> <span class="mi">0x80</span><span class="p">,</span> <span class="no">a</span>
+    <span class="nf">ret</span>
+<span class="nl">stack_top:</span> <span class="nf">EQU</span> <span class="mi">0x4000</span>
+<span class="nf">END</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/Z80/PS2/space_pressed.png" alt="spacebar pressed">
+<img src="/Z80/PS2/space_released.png" alt="spacebar released"></p>
+</main>
+
+  <footer>
+  <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <hr/>
+  © <a href="https://jurek333.github.io">Jurek333</a> 2020
+  
+  </footer>
+  </body>
+</html>
