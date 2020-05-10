@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CPU on [jurek333]</title>
+    <link>http://jurek333.github.io/zagadnienia/cpu/</link>
+    <description>Recent content in CPU on [jurek333]</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>pl-PL</language>
+    <lastBuildDate>Wed, 06 May 2020 16:30:27 +0200</lastBuildDate>
+    
+	<atom:link href="http://jurek333.github.io/zagadnienia/cpu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Z80 Personal Computer</title>
+      <link>http://jurek333.github.io/posts/z80-personal-computer-00/</link>
+      <pubDate>Wed, 06 May 2020 16:30:27 +0200</pubDate>
+      
+      <guid>http://jurek333.github.io/posts/z80-personal-computer-00/</guid>
+      <description>&lt;p&gt;Projekt 8 bitowego komputera osobistego opartego na procesorze Zilog Z80. Procesor ten trafił na rynek w 1976 roku. Jest on kompatybilny z Intelem 8080. Posiada 8-bitową szynę danych i 16-bitową szynę adresową. Najbardziej jest chyba znany z komputerów Sinclair ZX Spectrum i Elwro 800 Junior. Wciąż jest łatwo dostępny jako scalak DIP-40 i świetnie nadaje się do budowy domowego komputera.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

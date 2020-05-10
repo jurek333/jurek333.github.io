@@ -1,0 +1,111 @@
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.5em;
+}
+body img {
+  border-radius: 5px;
+}
+body p {
+  text-indent: 1.5em;
+}
+body ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+/* header and footer areas */
+.menu { padding-bottom: 1em; }
+.menu li { display: inline-block; }
+.post-description {
+  margin-left: .5em;
+  margin-top: .5em;
+  margin-bottom: .5em;
+  width: 100%;
+  display: inline-block;
+}
+.article-meta {
+  text-decoration: none;
+  background: #282a36;
+  color: #f8f8f2;
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+.article-meta a:link {
+  color: #f8f8f2;
+  text-decoration: none;
+}
+.article-meta a:visited {
+  color: #f8f8f2;
+}
+.article-meta .date {
+  color: #6272a4;
+  margin-left: .5em;
+  float: left;
+  margin-bottom: .5em;
+}
+.article-meta a:link .date {
+  color: #6272a4;
+}
+.article-meta .post-title {
+  margin-left: 1.5em;
+}
+.more-link {
+  display: block;
+  float: right;
+  margin-top: .7em;
+  margin-right: 3em;
+}
+.menu a {
+  text-decoration: none;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  border-radius: 5px;
+}
+.menu, footer { text-align: center; }
+h2, h1 { 
+  font-family:  spectralbold_italic, serif;
+  padding-bottom: .5em;;
+}
+.title { 
+  font-size: 1em; 
+  text-align: right;
+  margin-right: 2%;
+  padding-bottom: .3em;
+  float: right;
+}
+footer a { text-decoration: none; }
+hr {
+  border-style: dashed;
+  color: #ddd;
+}
+
+/* misc elements */
+img, iframe, video { max-width: 100%; }
+img {
+  margin-left: -1em;
+}
+.img .img-desc {
+  margin-left: 3em;
+}
+main { hyphens: auto; }
+blockquote {
+  background: #f9f9f9;
+  border-left: 5px solid #ccc;
+  padding: 3px 1em 3px;
+}
+
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+thead, tfoot, tr:nth-child(even) { background: #eee; }
+.overline {
+  text-decoration: overline;
+}

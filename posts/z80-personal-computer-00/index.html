@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[jurek333]</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/syntax.css" />
+  <link rel="stylesheet" href="/css/fonts.css" />
+  
+</head>
+
+<body>
+  <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Strona główna</a></li>
+      
+      <li><a href="/dziedziny/">Dziedziny</a></li>
+      
+      <li><a href="/zagadnienia/">Zagadnienia</a></li>
+      
+    </ul>
+  </nav>
+<div class="article-meta">
+    <h1>
+        <span class="date">2020 0506</span>
+        <span class="title">Z80 Personal Computer</span>
+    </h1>
+    <div style="clear:both;"></div>
+    
+</div>
+
+<main>
+    <p>Projekt 8 bitowego komputera osobistego opartego na procesorze Zilog Z80. Procesor ten trafił na rynek w 1976 roku. Jest on kompatybilny z Intelem 8080. Posiada 8-bitową szynę danych i 16-bitową szynę adresową. Najbardziej jest chyba znany z komputerów Sinclair ZX Spectrum i Elwro 800 Junior. Wciąż jest łatwo dostępny jako scalak DIP-40 i świetnie nadaje się do budowy domowego komputera.</p>
+<p>Posiadany przeze mnie model to STMicroelectronics Z8400AB1 Z80A CPU. Zatem mogę go taktować maksymalnie 4MHz (dostępne są modele pozwalające na 20MHz). By móc weryfikować działanie sprzętu ręcznie podając puls zegara i nie martwić się o odświeżanie RAM, zastosuję w projekcie pamięć SRAM. Program wykonywalny będzie wgrany na EEPROM. Obie pamięci posiadam w wielkościach 8k x 8bit, zatem zacznę od konfiguracji 8k ROM + 16k RAM. Z czasem spróbuję wprowadzić pełne 64k i może &ldquo;bankowanie pamięci&rdquo;.</p>
+<p>W sieci dostępnych jest wiele treści dotyczących składania własnego komputera na Z80. Można też znaleźć książkę Steve Ciarcia &ldquo;Build Your Own Z80 Computer&rdquo;. Rewelacyjna pozycja z 1981 roku, która może przeprowadzić nas przez cały projekt, albo podrzucić dużo wskazówek i rozwiązań do zastosowania. Jeśli chodzi o zrozumienie działania komputera na poziomie scalaków, świetnie wg mnie wyjaśnia to Ben Eater na swoim vlogu w 2-ch cyklach: <a href="https://www.youtube.com/watch?v=HyznrdDSSGM&amp;list=PLowKtXNTBypGqImE405J2565dvjafglHU">konstrukcji 8-bitowego komputera</a> i <a href="https://www.youtube.com/watch?v=LnzuMJLZRdU&amp;list=PLowKtXNTBypFbtuVMUVXNR0z1mu7dp7eH">budowaniu komputera opartego na 65C02</a>.</p>
+<h2 id="cpu">CPU</h2>
+<p>CPU posiada 40 wyprowadzeń. Poza 16 adresowymi i 8 dla danych jest oczywiście VCC i GND oraz: reset, clock, przerwania niemaskowane (NMI) i maskowane (INT), M1 (bit cyklu maszynowego), refresh (dla obsługi DRAM), wait oraz halt, read, write, rządanie pamięci (MREQ) i operacji wejścia/wyjścia (IOREQ), żądanie kontroli nad szyną i akceptacja oddania tej kontroli (BUSRQ i BUSACK). W wersji podstawowej poza zasilaniem musimy dostarczyć reset i taktowanie. Pozostałe wejścia (NMI, INT, WAIT, BUSRQ) ustawione będą w stan nieaktywny (w tym przypadku wysoki). Z wyjść użyjemy wszystkich wyjść adresowych i danych oraz RD, WR i MREQ.</p>
+<p><p class="img">
+    <img id="CPU_schemat" src="/Z80/MainBoard/cpu.png"  alt="Rys. 1) Schemat wyprowadzeń CPU" title="Rys. 1) Schemat wyprowadzeń CPU"  />
+    <br /><span class="img-desc">Rys. 1) Schemat wyprowadzeń CPU</span>
+</p></p>
+<p>Wyjścia danych D0-D7 należy połączyć z odpowiadającymi wyprowadzeniami w pamięciach RAM i ROM. Jako że są to tylko 8k kości to używają tylko bitów A0-A12. Wyjścia A13-A15 przekażę do demultipleksera 3b -&gt; 8 linii, który posłuży mi do realizacji najprostszej logiki adresowania: 0x0000-0x1FFF ROM, 0x2000-0x3FFF - pierwsze 8k RAMu, 0x4000-0x5FFF - drugie 8k RAMu.</p>
+<p>To dekodowanie załatwi wybór aktywnego scalaka i powinno się odbywać tylko jeśli CPU sięga do pamięci - zatem MREQ jest w stanie niskim. Dodatkowo do pamięci RAM powinniśmy dostarczyć bit mówiący czy będzie się odbywał odczyt (OE - output enabled) czy zapis (WE - write enabled). Zatem spinam te nóżki z odpowiednio RD i WR na CPU. W moim modelu pamięci RAM by układ był aktywny należy ustawić 2 bity CE1 i CE2. Na ten moment jedno z wejść (aktywowane wysokim stanem) na twardo podpinam poprzez rezystor do +5V (co widać na <a href="#main-board-shema">Rys. 3</a>).</p>
+<h2 id="przycisk-reset">Przycisk reset</h2>
+<p>By Z80 zaczęło wykonywać zadany program od początku (od adresu 0x0000) musi zostać zresetowane. W dokumentacji możemy znaleźć, że wymaga to by reset był w stanie niskim przynajmniej przez 3 cykle zegara. Warto też zadbać o debouncing przycisku reset. Z książki &ldquo;Build Your Own Z80 Computer&rdquo; zaczerpnąłem układ spełniający te wymagania:</p>
+<p><p class="img">
+    <img id="reset" src="/Z80/MainBoard/reset.png"  alt="Rys. 2) Schemat przycisku reset" title="Rys. 2) Schemat przycisku reset"  />
+    <br /><span class="img-desc">Rys. 2) Schemat przycisku reset</span>
+</p></p>
+<p>Podaje on nam reset w 2-ch stanach wysokim dla innych komponentów w przyszłości i niskim dla CPU. Kondensator C5 ładujący się po włączeniu poprzez opornik R5 służy nam do &ldquo;odmierzenia czasu nadawania&rdquo; sygnału RST. Dobierając te wartości możemy w razie potrzeby wydłużyć okienko czasowe, w którym po włączeniu zasilania lub puszczeniu przycisku reset układ będzie podawał stan niski - wstrzymywał reset CPU.</p>
+<h2 id="płyta-główna">Płyta główna</h2>
+<p>Całość tego skromnego PoCa zamieszczona jest na poniższym schemacie. Na razie możemy sprawdzić działanie programu tylko monitorując szyny danych i/lub adresu. Następnym krokiem będzie przygotowanie takiego &ldquo;analizatora logicznego&rdquo; w oparciu o np. Arduino Mega. Spróbuję wykonać takowy analizator oraz &ldquo;testową kartę graficzną&rdquo; przy pomocy której program mógłby wyświetlić np. powitanie na małym ekranie.</p>
+<p><p class="img">
+    <img id="main-board-shema" src="/Z80/MainBoard/MainBoard_v0.1.png"  alt="Rys. 3) Schemat podstawowego komputera" title="Rys. 3) Schemat podstawowego komputera"  />
+    <br /><span class="img-desc">Rys. 3) Schemat podstawowego komputera</span>
+</p></p>
+<p>Należy tutaj również zaznaczyć, że CPU nie ma nieskończonych możliwości jeśli chodzi o zasilenie innych układów poprzez swoje wyjścia. Dokumentacja wspomina o poborze prądu na poziomie 200uA. Na razie operujemy z niewieloma układami. Ale dla większej liczby może się okazać, że CPU nie będzie w stanie zapewnić natężenia. Stąd idąc za radą Stevena Ciarcii może być warto w przyszłości opatrzyć wyjścia w bufory zapewniające dodatkowy prąd w razie potrzeby.</p>
+<p>Warto już powoli myśleć o &ldquo;wyglądzie&rdquo; uniwersalnej magistrali dla komputera. Z80 obsługuje urządzenia I/O poprzez &ldquo;dodatkową&rdquo; adresację. Zamiast 0 na MREQ daje 0 na IOREQ i używa dolnych 8 bitów adresu do wybrania urządzenia/portu docelowego. Zatem dla peryferiów nie będziemy potrzebować pełnych 16 bitów adresu, a to już poważnie zmniejsza nam wielkość magistrali. Ta wiedza przyda się już podczas tworzenia testowej &ldquo;karty graficznej&rdquo;.</p>
+<p>Z80 jest na tyle wolny, że praktycznie nie musimy się przejmować przeliczaniem czasów obsługi dostępu do pamięci. Ale jeśli komunikowalibyśmy się z jakimś wolniejszym podzespołem, warto pamiętać o wsparciu jakie wtedy Z80 oferuje. Można wstrzymać wykonanie instrukcji przez procesor ustawiając WAIT na 0 do czasu kiedy dane nie będą gotowe/odczytane.</p>
+<h2 id="linki">Linki</h2>
+<ul>
+<li>[<a href="https://www.youtube.com/watch?v=HyznrdDSSGM&amp;list=PLowKtXNTBypGqImE405J2565dvjafglHU">1</a>] <a href="https://www.youtube.com/watch?v=HyznrdDSSGM&amp;list=PLowKtXNTBypGqImE405J2565dvjafglHU">Ben Eater: 8-bitowy procesor</a></li>
+<li>[<a href="https://www.youtube.com/watch?v=LnzuMJLZRdU&amp;list=PLowKtXNTBypFbtuVMUVXNR0z1mu7dp7eH">2</a>] <a href="https://www.youtube.com/watch?v=LnzuMJLZRdU&amp;list=PLowKtXNTBypFbtuVMUVXNR0z1mu7dp7eH">Ben Eater: Komputer oparty na 65C02</a></li>
+</ul>
+</main>
+
+  <footer>
+  <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <hr/>
+  © <a href="https://jurek333.github.io">Jurek333</a> 2020
+  
+  </footer>
+  </body>
+</html>
