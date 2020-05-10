@@ -2,13 +2,14 @@
 title: "Bus Monitor"
 date: 2020-05-10T09:54:19+02:00
 draft: false
+keywords: [arduino, mega2560, LCD]
 dziedziny:
   - Z80PC
 zagadnienia:
   - Arduino
 ---
 
-Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszytko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.
+Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszystko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.
 
 <!--more-->
 
@@ -23,26 +24,27 @@ Co do samego podłączenia LCD i sterowania nim to w sieci dostępnych jest wiel
 Teraz czas na kod który napędzi ten monitor. Jest on banalnie prosty. Podczas konfigurowania startowego ustawiam odpowiednio piny, inicjuję i czyszczę ekran LCD wypisując jednocześnie domyślny tekst. W pętli zaś odczytuję stan pinów szyny i sygnałów sterujących Z80, przeliczam ilość cykli i wypisuję dane.
 
 ```c
+// bus_monitor.ino
 #include <LiquidCrystal.h>
-// Connections:
+// LCD
+#define COLS 16
+#define ROWS 2
 #define RS_PIN 52
 #define ENABLE_PIN 53
-
 #define D4_PIN 48
 #define D5_PIN 49
 #define D6_PIN 50
 #define D7_PIN 51
-
-#define COLS 16
-#define ROWS 2
-
+// Probes
 #define BUS0 22
 #define BUS7 29
 #define M1 30
 #define IOREQ 31
 #define RST 33
 
-LiquidCrystal lcd(RS_PIN, ENABLE_PIN, D4_PIN, D5_PIN, D6_PIN, D7_PIN);
+LiquidCrystal lcd(RS_PIN, ENABLE_PIN, 
+    D4_PIN, D5_PIN, D6_PIN, D7_PIN);
+
 int cycle = 0;
 int m1 = HIGH;
 char buf[8];

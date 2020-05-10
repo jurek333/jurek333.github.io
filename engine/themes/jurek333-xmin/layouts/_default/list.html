@@ -19,10 +19,21 @@
     </div>
     <div class="post-description">
       {{ .Summary | plainify }}
-      <div class="more-link">
-        <a href="{{ .RelPermalink }}">więcej...</a>
+      <div class="footbar">
+        <span><i class="far fa-clock"></i> {{ .ReadingTime }} min.
+          {{if (.Params.dziedziny) }}
+          / {{ delimit .Params.dziedziny "/ " }}
+          {{ end }}
+          {{if (.Params.zagadnienia) }}
+          / {{ delimit .Params.zagadnienia " / " }}
+          {{ end }}
+        </span>
+        <div class="more-link">
+          <a href="{{ .RelPermalink }}">więcej...</a>
+        </div>
       </div>
       </span>
+    </div>
   </li>
   {{ end }}
 </ul>

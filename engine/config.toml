@@ -36,14 +36,17 @@ unsafe= true
 [[menu.main]]
     name = "Strona główna"
     url = "/"
+    pre = "<i class=\"fas fa-desktop\"></i>"
     weight = 1
 [[menu.main]]
-    name = "Dziedziny"
+    name = "Lista tematów"
     url = "/dziedziny/"
+    pre = "<i class=\"fas fa-journal-whills\"></i>"
     weight = 3
 [[menu.main]]
     name = "Zagadnienia"
     url = "/zagadnienia/"
+    pre = "<i class=\"fas fa-tags\"></i>"
     weight = 4
 
 [params]

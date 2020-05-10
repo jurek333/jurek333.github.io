@@ -24,6 +24,11 @@ body ul {
   width: 100%;
   display: inline-block;
 }
+.post-description .footbar {
+  color: gray;
+  margin-top: 1em;
+  margin-left: 1em;
+}
 .article-meta {
   text-decoration: none;
   background: #282a36;
