@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[jurek333]</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/syntax.css" />
+  <link rel="stylesheet" href="/css/fonts.css" />
+  
+</head>
+
+<body>
+  <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Strona główna</a></li>
+      
+      <li><a href="/dziedziny/">Dziedziny</a></li>
+      
+      <li><a href="/zagadnienia/">Zagadnienia</a></li>
+      
+    </ul>
+  </nav>
+<div class="article-meta">
+    <h1>
+        <span class="date">2020 0510</span>
+        <span class="title">Bus Monitor</span>
+    </h1>
+    <div style="clear:both;"></div>
+    
+</div>
+
+<main>
+    <p>Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszytko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.</p>
+<p>Moje Z80 na ten moment może działać taktowane maksymalnie 4MHz-ami. Acz podczas debugowania będę działał na manualnym zegarze lub kliku hercowym (opartym na NE555). Do analizy stanów nie jest mi zatem na ten moment potrzebny demon szybkości. Użyję do tego Arduino Mega 2560 i LCD 16x2 znakowego. Taktowanie Arduino (16MHz) jest dla mnie wystarczające.</p>
+<p>Wersję badającą 8 bitów szyny danych plus sygnał cyklu (M1), żądanie wejścia/wyjścia (IOREQ) oraz reset (RST) przedstawia poniższy schemat (<a href="#schemat">Rys. 1</a>). Porty Arduino 22-29 połączone będą kolejno z wyjściami szyny danych komputera BUS0-BUS7, M1, IOREQ i RST zajmą porty 30, 31 i 33. Komunikacja i sterowanie LCD obędzie się poprzez wyjścia 48-53.</p>
+<p><p class="img">
+    <img id="schemat" src="/Z80/BusMonitor/bus_monitor_schemat.png"  alt="Rys. 1) Schemat układu" title="Rys. 1) Schemat układu"  />
+    <br /><span class="img-desc">Rys. 1) Schemat układu</span>
+</p></p>
+<p>Co do samego podłączenia LCD i sterowania nim to w sieci dostępnych jest wiele materiałów (np. na stronie <a href="https://www.arduino.cc/en/Tutorial/HelloWorld">arduino.cc</a>). Mój model można sterować 8 bitami danych jak i 4-ma. Dla oszczędności miejsca wybrałem 4-bitową opcję. Dla Mega 2560 pozwala to na zmieszczenie całej szyny danych (8b) i szyny adresowej (16b) zostawiając 2 porty na 2 inne wejścia. Przy zastosowaniu oszczędniejszego protokołu komunikacji (np. I2C zyskalibyśmy dodatkowe 2 wejścia).</p>
+<p>Teraz czas na kod który napędzi ten monitor. Jest on banalnie prosty. Podczas konfigurowania startowego ustawiam odpowiednio piny, inicjuję i czyszczę ekran LCD wypisując jednocześnie domyślny tekst. W pętli zaś odczytuję stan pinów szyny i sygnałów sterujących Z80, przeliczam ilość cykli i wypisuję dane.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;LiquidCrystal.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="c1">// Connections:
+</span><span class="c1"></span><span class="cp">#define RS_PIN 52
+</span><span class="cp">#define ENABLE_PIN 53
+</span><span class="cp"></span>
+<span class="cp">#define D4_PIN 48
+</span><span class="cp">#define D5_PIN 49
+</span><span class="cp">#define D6_PIN 50
+</span><span class="cp">#define D7_PIN 51
+</span><span class="cp"></span>
+<span class="cp">#define COLS 16
+</span><span class="cp">#define ROWS 2
+</span><span class="cp"></span>
+<span class="cp">#define BUS0 22
+</span><span class="cp">#define BUS7 29
+</span><span class="cp">#define M1 30
+</span><span class="cp">#define IOREQ 31
+</span><span class="cp">#define RST 33
+</span><span class="cp"></span>
+<span class="n">LiquidCrystal</span> <span class="nf">lcd</span><span class="p">(</span><span class="n">RS_PIN</span><span class="p">,</span> <span class="n">ENABLE_PIN</span><span class="p">,</span> <span class="n">D4_PIN</span><span class="p">,</span> <span class="n">D5_PIN</span><span class="p">,</span> <span class="n">D6_PIN</span><span class="p">,</span> <span class="n">D7_PIN</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">cycle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">HIGH</span><span class="p">;</span>
+<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="n">RST</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">);</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="n">IOREQ</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">);</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">);</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">b</span><span class="o">=</span><span class="n">BUS0</span><span class="p">;</span> <span class="n">b</span><span class="o">&lt;=</span><span class="n">BUS7</span><span class="p">;</span> <span class="o">++</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">pinMode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">);</span>
+    
+  <span class="n">lcd</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">COLS</span><span class="p">,</span><span class="n">ROWS</span><span class="p">);</span>
+  <span class="n">lcd</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  <span class="n">lcd</span><span class="p">.</span><span class="n">setCursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+  <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;bus: &#34;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">byte</span> <span class="nf">getByte</span><span class="p">()</span> 
+<span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buff</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span>
+  <span class="n">byte</span> <span class="n">dataByte</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">b</span><span class="o">=</span><span class="n">BUS7</span><span class="p">;</span> <span class="n">b</span><span class="o">&gt;=</span><span class="n">BUS0</span><span class="p">;</span> <span class="o">--</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">dataByte</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">dataByte</span> <span class="o">|=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">dataByte</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print2ndLine</span><span class="p">(</span><span class="kt">int</span> <span class="n">ioreq</span><span class="p">)</span> 
+<span class="p">{</span>
+  <span class="n">lcd</span><span class="p">.</span><span class="n">setCursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">m1</span> <span class="o">==</span> <span class="n">HIGH</span><span class="p">)</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;M1 &#34;</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;   &#34;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">ioreq</span> <span class="o">==</span> <span class="n">LOW</span><span class="p">)</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;IO &#34;</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;   &#34;</span><span class="p">);</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">cycle</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&#34;        &#34;</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">cycle</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">rst</span> <span class="o">=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">RST</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">ioreq</span> <span class="o">=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">IOREQ</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">m1_state</span> <span class="o">=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">M1</span><span class="p">);</span>
+  <span class="n">itoa</span><span class="p">(</span><span class="n">getByte</span><span class="p">(),</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">m1_state</span> <span class="o">==</span> <span class="n">HIGH</span> <span class="o">&amp;&amp;</span> <span class="n">m1</span> <span class="o">==</span> <span class="n">LOW</span><span class="p">)</span>
+    <span class="o">++</span><span class="n">cycle</span><span class="p">;</span>
+  <span class="n">m1</span> <span class="o">=</span> <span class="n">m1_state</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">rst</span> <span class="o">==</span> <span class="n">HIGH</span><span class="p">)</span>
+    <span class="n">cycle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="n">lcd</span><span class="p">.</span><span class="n">setCursor</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">lcd</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+
+  <span class="n">print2ndLine</span><span class="p">(</span><span class="n">ioreq</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Z80 realizuje instrukcje w kilku <em>cyklach zegarowych</em>. Pierwszy cykl zegarowy podczas którego CPU odczytuje instrukcję do wykonania jest zawsze sygnalizowany stanem niskim na wyjściu M1 procesora. Ja sobie go odwracam na SN74HC04 dlatego w kodzie w pętli warunkami wykrywam przejście z niskiego stanu na wysoki i tylko wtedy podbijam licznik cykli/instrukcji wykonanych (<code>cycle</code>). Jeśli dostanę sygnał resetu (RST) to zeruję ten licznik. IOREQ w procesorze też jest aktywne jeśli ma niski stan. Ten sygnał pozostawiłem nie odwrócony stąd wypisuję na ekran informację że występuje tylko kiedy jest w stanie niskim.</p>
+<p>Oczywiście dobrze jest sprawdzić urządzenie czy działa tak jak powinno. Można wpiąć &ldquo;sondy&rdquo; do płytki stykowej i podawać wybrane wartości (0,1) sprawdzając poprawność odczytu. Taki prosty &ldquo;bus monitor&rdquo; pozwolił mi podejrzeć zawartość szyny danych podczas wykonywania testowego kodu dla którego znałem wartości jakie spodziewałem się ujrzeć na szynie. I dzięki niemu znalazłem przypadkowo uziemioną nóżkę RAM-u (7-my bit danych miał zawsze wartość 0). Można dzięki niemu też debugować swój program. Podczas M1 CPU pobiera z ROM instrukcję do wykonania, to wtedy z szyny możemy odczytać wykonywaną instrukcję i porównać ze spodziewaną.</p>
+<p>Co do przydatności&hellip;
+Prosty 8 kanałowy 24MHz klon Saleae jest dostępny w okolicach 30-40zł. Zatem zamiast za tę kwotę kupować Arduino można od razu kupić taki klon. Do zabawy z cyfrową elektroniką na pewno się przyda, a oprogramowanie Saleae ma duże możliwości, choćby interpretowanie protokołów szeregowych. Zawsze jednak warto spróbować coś samemu zrobić by wiedzieć jak to działa albo dostosować rozwiązanie pod własne wymagania.</p>
+</main>
+
+  <footer>
+  <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <hr/>
+  © <a href="https://jurek333.github.io">Jurek333</a> 2020
+  
+  </footer>
+  </body>
+</html>
