@@ -20,9 +20,11 @@ jobs:
                   hugo-version: 'latest'
                   extended: true
 
-            - name: Build
+            - name: change dir
               run: cd engine 
+            - name: Build
               run: hugo --minify
+            - name: change back dir
               run: cd ..
 
             - name: Deploy
