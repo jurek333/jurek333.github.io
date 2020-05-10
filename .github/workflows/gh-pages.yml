@@ -20,7 +20,7 @@ jobs:
                   hugo-version: '0.69.2'
 
             - name: Build
-              run: (cd engine; hugo --minify)
+              run: (cd engine; hugo --minify; ls -R)
 
             - name: Tree
               run: ls -R
