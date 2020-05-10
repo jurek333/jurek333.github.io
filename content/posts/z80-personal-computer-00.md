@@ -3,7 +3,7 @@ title: "Z80 Personal Computer"
 date: 2020-05-06T16:30:27+02:00
 draft: false
 dziedziny:
-  - Z80
+  - Z80PC
 zagadnienia:
   - Retro
   - CPU
@@ -13,9 +13,9 @@ Projekt 8 bitowego komputera osobistego opartego na procesorze Zilog Z80. Proces
 
 <!--more-->
 
-Posiadany przeze mnie model to STMicroelectronics Z8400AB1 Z80A CPU. Zatem mogę go taktować maksymalnie 4MHz (dostępne są modele pozwalające na 20MHz). By móc weryfikować działanie sprzętu ręcznie podając puls zegara i nie martwić się o odświeżanie RAM, zastosuję w projekcie pamięć SRAM. Program wykonywalny będzie wgrany ma EEPROM. Obie pamięci posiadam w wielkościach 8k x 8bit, zatem zacznę od konfiguracji 8k ROM + 16k RAM. Z czasem spróbuję wprowadzić pełne 64k i może "bankowanie pamięci".
+Posiadany przeze mnie model to STMicroelectronics Z8400AB1 Z80A CPU. Zatem mogę go taktować maksymalnie 4MHz (dostępne są modele pozwalające na 20MHz). By móc weryfikować działanie sprzętu ręcznie podając puls zegara i nie martwić się o odświeżanie RAM, zastosuję w projekcie pamięć SRAM. Program wykonywalny będzie wgrany na EEPROM. Obie pamięci posiadam w wielkościach 8k x 8bit, zatem zacznę od konfiguracji 8k ROM + 16k RAM. Z czasem spróbuję wprowadzić pełne 64k i może "bankowanie pamięci".
 
-W sieci dostępnych jest wiele treści dotyczących składania własnego komputera na Z80. Można też znaleźć książkę Steve Ciarcia "Build Your Own Z80 Computer". Rewelacyjne pozycja z 1981 roku, która może przeprowadzić nas przez cały projekt, albo podrzucić dużo wskazówek i rozwiązań do zastosowania. Jeśli chodzi o zrozumienie działania komputera na poziomie scalaków, świetnie wg mnie wyjaśnia to Ben Eater na swoim vlogu w 2-ch cyklach: [konstrukcji 8-bitowego komputera][1] i [budowaniu komputera opartego na 65C02][2].
+W sieci dostępnych jest wiele treści dotyczących składania własnego komputera na Z80. Można też znaleźć książkę Steve Ciarcia "Build Your Own Z80 Computer". Rewelacyjna pozycja z 1981 roku, która może przeprowadzić nas przez cały projekt, albo podrzucić dużo wskazówek i rozwiązań do zastosowania. Jeśli chodzi o zrozumienie działania komputera na poziomie scalaków, świetnie wg mnie wyjaśnia to Ben Eater na swoim vlogu w 2-ch cyklach: [konstrukcji 8-bitowego komputera][1] i [budowaniu komputera opartego na 65C02][2].
 
 ## CPU
 
@@ -23,7 +23,7 @@ CPU posiada 40 wyprowadzeń. Poza 16 adresowymi i 8 dla danych jest oczywiście 
 
 ![CPU_schemat](/Z80/MainBoard/cpu.png "Rys. 1) Schemat wyprowadzeń CPU")
   
-Wyjścia danych D0-D7 należy połączyć z odpowiadającymi wyprowadzeniami w pamięciach RAM i ROM. Jako że są to tylko 8k kości to używają tylko bitów A0-A12. A13-A15 przekażę do demultipleksera 3b -> 8 linii, który posłuży mi do realizacji najprostszej logiki adresowania: 0x0000-0x1FFF ROM, 0x2000-0x3FFF - pierwsze 8k RAMu, 0x4000-0x5FFF - drugie 8k RAMu.
+Wyjścia danych D0-D7 należy połączyć z odpowiadającymi wyprowadzeniami w pamięciach RAM i ROM. Jako że są to tylko 8k kości to używają tylko bitów A0-A12. Wyjścia A13-A15 przekażę do demultipleksera 3b -> 8 linii, który posłuży mi do realizacji najprostszej logiki adresowania: 0x0000-0x1FFF ROM, 0x2000-0x3FFF - pierwsze 8k RAMu, 0x4000-0x5FFF - drugie 8k RAMu.
 
 To dekodowanie załatwi wybór aktywnego scalaka i powinno się odbywać tylko jeśli CPU sięga do pamięci - zatem MREQ jest w stanie niskim. Dodatkowo do pamięci RAM powinniśmy dostarczyć bit mówiący czy będzie się odbywał odczyt (OE - output enabled) czy zapis (WE - write enabled). Zatem spinam te nóżki z odpowiednio RD i WR na CPU. W moim modelu pamięci RAM by układ był aktywny należy ustawić 2 bity CE1 i CE2. Na ten moment jedno z wejść (aktywowane wysokim stanem) na twardo podpinam poprzez rezystor do +5V (co widać na [Rys. 3](#main-board-shema)).
 

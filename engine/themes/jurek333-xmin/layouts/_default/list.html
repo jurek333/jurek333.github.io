@@ -17,9 +17,12 @@
         <span class="post-title">{{ .Title | markdownify }}</span>
       </a>
     </div>
-    <span class="post-description">
+    <div class="post-description">
       {{ .Summary | plainify }}
-    </span>
+      <div class="more-link">
+        <a href="{{ .RelPermalink }}">więcej...</a>
+      </div>
+      </span>
   </li>
   {{ end }}
 </ul>

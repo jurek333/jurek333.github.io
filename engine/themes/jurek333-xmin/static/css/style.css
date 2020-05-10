@@ -21,6 +21,7 @@ body ul {
   margin-left: .5em;
   margin-top: .5em;
   margin-bottom: .5em;
+  width: 100%;
   display: inline-block;
 }
 .article-meta {
@@ -41,12 +42,20 @@ body ul {
 .article-meta .date {
   color: #6272a4;
   margin-left: .5em;
+  float: left;
+  margin-bottom: .5em;
 }
 .article-meta a:link .date {
   color: #6272a4;
 }
 .article-meta .post-title {
-  margin-left: 1.5em;;
+  margin-left: 1.5em;
+}
+.more-link {
+  display: block;
+  float: right;
+  margin-top: .7em;
+  margin-right: 3em;
 }
 .menu a {
   text-decoration: none;
@@ -59,10 +68,14 @@ body ul {
 .menu, footer { text-align: center; }
 h2, h1 { 
   font-family:  spectralbold_italic, serif;
+  padding-bottom: .5em;;
 }
 .title { 
-  font-size: 1.1em; 
-  margin-left: 2em; 
+  font-size: 1em; 
+  text-align: right;
+  margin-right: 2%;
+  padding-bottom: .3em;
+  float: right;
 }
 footer a { text-decoration: none; }
 hr {
@@ -72,6 +85,9 @@ hr {
 
 /* misc elements */
 img, iframe, video { max-width: 100%; }
+img {
+  margin-left: -1em;
+}
 .img .img-desc {
   margin-left: 3em;
 }
