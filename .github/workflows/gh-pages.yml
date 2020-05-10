@@ -20,12 +20,8 @@ jobs:
                   hugo-version: 'latest'
                   extended: true
 
-            - name: change dir
-              run: cd engine 
             - name: Build
-              run: hugo --minify
-            - name: change back dir
-              run: cd ..
+              run: (cd engine; hugo --minify)
 
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
