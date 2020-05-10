@@ -23,7 +23,7 @@ jobs:
               run: (cd engine; hugo config)
 
             - name: Build
-              run: (ls ./public -R; cd engine; hugo --minify; ls ../public -R)
+              run: (ls ./public -R; cd engine; hugo --config config.toml; ls ../public -R)
 
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
