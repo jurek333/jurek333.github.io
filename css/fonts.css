@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'spectralbold';
-  src: url('/font/spectral-bold.woff2') format('woff2'),
-       url('/font/spectral-bold.woff') format('woff');
+  src: url('/webfonts/spectral-bold.woff2') format('woff2'),
+       url('/webfonts/spectral-bold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -9,8 +9,8 @@
 
 @font-face {
   font-family: 'spectralbold_italic';
-  src: url('/font/spectral-bolditalic.woff2') format('woff2'),
-       url('/font/spectral-bolditalic.woff') format('woff');
+  src: url('/webfonts/spectral-bolditalic.woff2') format('woff2'),
+       url('/webfonts/spectral-bolditalic.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -18,8 +18,8 @@
 
 @font-face {
   font-family: 'spectralitalic';
-  src: url('/font/spectral-italic.woff2') format('woff2'),
-       url('/font/spectral-italic.woff') format('woff');
+  src: url('/webfonts/spectral-italic.woff2') format('woff2'),
+       url('/webfonts/spectral-italic.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -27,8 +27,8 @@
 
 @font-face {
   font-family: 'spectralregular';
-  src: url('/font/spectral-regular.woff2') format('woff2'),
-       url('/font/spectral-regular.woff') format('woff');
+  src: url('/webfonts/spectral-regular.woff2') format('woff2'),
+       url('/webfonts/spectral-regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/syntax.css" />
   <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/fontawesome.min.css" />
   
 </head>
 
@@ -15,11 +16,17 @@
   <nav>
     <ul class="menu">
       
-      <li><a href="/">Strona główna</a></li>
+      <li>
+        <a href="/"><i class="fas fa-desktop"></i>&nbsp;Strona główna</a>
+      </li>
       
-      <li><a href="/dziedziny/">Dziedziny</a></li>
+      <li>
+        <a href="/dziedziny/"><i class="fas fa-journal-whills"></i>&nbsp;Lista tematów</a>
+      </li>
       
-      <li><a href="/zagadnienia/">Zagadnienia</a></li>
+      <li>
+        <a href="/zagadnienia/"><i class="fas fa-tags"></i>&nbsp;Zagadnienia</a>
+      </li>
       
     </ul>
   </nav>
@@ -33,7 +40,7 @@
 </div>
 
 <main>
-    <p>Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszytko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.</p>
+    <p>Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszystko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.</p>
 <p>Moje Z80 na ten moment może działać taktowane maksymalnie 4MHz-ami. Acz podczas debugowania będę działał na manualnym zegarze lub kliku hercowym (opartym na NE555). Do analizy stanów nie jest mi zatem na ten moment potrzebny demon szybkości. Użyję do tego Arduino Mega 2560 i LCD 16x2 znakowego. Taktowanie Arduino (16MHz) jest dla mnie wystarczające.</p>
 <p>Wersję badającą 8 bitów szyny danych plus sygnał cyklu (M1), żądanie wejścia/wyjścia (IOREQ) oraz reset (RST) przedstawia poniższy schemat (<a href="#schemat">Rys. 1</a>). Porty Arduino 22-29 połączone będą kolejno z wyjściami szyny danych komputera BUS0-BUS7, M1, IOREQ i RST zajmą porty 30, 31 i 33. Komunikacja i sterowanie LCD obędzie się poprzez wyjścia 48-53.</p>
 <p><p class="img">
@@ -128,28 +135,30 @@
 </span><span class="lnt">82
 </span><span class="lnt">83
 </span><span class="lnt">84
+</span><span class="lnt">85
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;LiquidCrystal.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="c1">// Connections:
-</span><span class="c1"></span><span class="cp">#define RS_PIN 52
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// bus_monitor.ino
+</span><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;LiquidCrystal.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="c1">// LCD
+</span><span class="c1"></span><span class="cp">#define COLS 16
+</span><span class="cp">#define ROWS 2
+</span><span class="cp">#define RS_PIN 52
 </span><span class="cp">#define ENABLE_PIN 53
-</span><span class="cp"></span>
-<span class="cp">#define D4_PIN 48
+</span><span class="cp">#define D4_PIN 48
 </span><span class="cp">#define D5_PIN 49
 </span><span class="cp">#define D6_PIN 50
 </span><span class="cp">#define D7_PIN 51
-</span><span class="cp"></span>
-<span class="cp">#define COLS 16
-</span><span class="cp">#define ROWS 2
-</span><span class="cp"></span>
-<span class="cp">#define BUS0 22
+</span><span class="cp"></span><span class="c1">// Probes
+</span><span class="c1"></span><span class="cp">#define BUS0 22
 </span><span class="cp">#define BUS7 29
 </span><span class="cp">#define M1 30
 </span><span class="cp">#define IOREQ 31
 </span><span class="cp">#define RST 33
 </span><span class="cp"></span>
-<span class="n">LiquidCrystal</span> <span class="nf">lcd</span><span class="p">(</span><span class="n">RS_PIN</span><span class="p">,</span> <span class="n">ENABLE_PIN</span><span class="p">,</span> <span class="n">D4_PIN</span><span class="p">,</span> <span class="n">D5_PIN</span><span class="p">,</span> <span class="n">D6_PIN</span><span class="p">,</span> <span class="n">D7_PIN</span><span class="p">);</span>
+<span class="n">LiquidCrystal</span> <span class="nf">lcd</span><span class="p">(</span><span class="n">RS_PIN</span><span class="p">,</span> <span class="n">ENABLE_PIN</span><span class="p">,</span> 
+    <span class="n">D4_PIN</span><span class="p">,</span> <span class="n">D5_PIN</span><span class="p">,</span> <span class="n">D6_PIN</span><span class="p">,</span> <span class="n">D7_PIN</span><span class="p">);</span>
+
 <span class="kt">int</span> <span class="n">cycle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">HIGH</span><span class="p">;</span>
 <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>

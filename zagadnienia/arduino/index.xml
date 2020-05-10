@@ -17,7 +17,7 @@
       <pubDate>Sun, 10 May 2020 09:54:19 +0200</pubDate>
       
       <guid>http://jurek333.github.io/posts/bus-monitor/</guid>
-      <description>&lt;p&gt;Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszytko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszystko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.&lt;/p&gt;</description>
     </item>
     
   </channel>
