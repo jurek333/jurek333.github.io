@@ -2,10 +2,10 @@ baseURL = "http://jurek333.github.io/"
 languageCode = "pl-PL"
 title = "[jurek333]"
 theme = "jurek333-xmin"
-contentDir = "..\\content"
+contentDir = "../content"
 defaultContentLanguage = "pl"
-publishDir = "..\\public"
-staticDir = "..\\static"
+publishDir = "../public"
+staticDir = "../static"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 footnotereturnlinkcontents = "↩"
