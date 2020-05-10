@@ -21,7 +21,9 @@ jobs:
                   extended: true
 
             - name: Build
+              run: cd engine 
               run: hugo --minify
+              run: cd ..
 
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
