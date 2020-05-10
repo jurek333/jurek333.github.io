@@ -1,7 +1,7 @@
 ---
 title: "Bus Monitor"
 date: 2020-05-10T09:54:19+02:00
-draft: true
+draft: false
 dziedziny:
   - Z80PC
 zagadnienia:
