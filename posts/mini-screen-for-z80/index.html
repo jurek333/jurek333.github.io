@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[jurek333]</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/syntax.css" />
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/fontawesome.min.css" />
+  
+</head>
+
+<body>
+  <nav>
+    <ul class="menu">
+      
+      <li>
+        <a href="/"><i class="fas fa-server"></i>&nbsp;Strona główna</a>
+      </li>
+      
+      <li>
+        <a href="/dziedziny/"><i class="fas fa-journal-whills"></i>&nbsp;Lista tematów</a>
+      </li>
+      
+      <li>
+        <a href="/zagadnienia/"><i class="fas fa-tags"></i>&nbsp;Zagadnienia</a>
+      </li>
+      
+    </ul>
+  </nav>
+<div class="article-meta">
+    <h1>
+        <span class="date">2020 0511</span>
+        <span class="title">Mini ekran dla Z80</span>
+    </h1>
+    <div style="clear:both;"></div>
+    
+</div>
+
+<main>
+    <p>Retro komputer odprawiający swoją magię w czeluściach scalaków bez wizualnej reprezentacji to nie najefektywniejsza rozrywka. Wykonam więc PoC z Arduino Micro i niewielkiego ekranu OLED <em>kartę graficzną</em> i ekran.</p>
+<p>Jak Z80 będzie wyświetlał dane na ekranie? Wymyśliłem sobie, że procesor będzie komunikował się z &ldquo;kartą graficzną&rdquo; poprzez port - przyjmijmy na ten moment - <strong>0x80</strong>. Instrukcjami <code>out 0x80, &lt;value&gt;</code> będę przekazywał wartość <em>&lt;value&gt;</em> do prowizorycznej karty graficznej, która zadba o wyświetlenie jej na OLEDzie.</p>
+<p>Od strony CPU wygląda to tak, że Z80 ustawia na dolnym bajcie pamięci adres portu - 0x80, na szynie danych podana wartość i ustawia wyjście IOREQ (żądanie operacji I/O) w stan niski. Na ten moment nie mam innych urządzeń zatem dla prostoty i przetestowania PoC pominę logikę sprawdzania czy adres naprawdę wynosi 0x80. Zakładam w tym PoC, że każde żądanie I/O dotyczy wyświetlenia znaku na ekranie. Zatem piny Arduino łączę z szyną danych, IOREQ i RST by czyścić ekran przy resecie komputera. Połączenia pokazane są na <a href="#oled-display">Rys. 1</a>.</p>
+<p><p class="img">
+    <img id="oled-display" src="/Z80/OledDisplay/oled_display.png"  alt="Rys. 1) Schemat połączenia wyświetlacza, arduino i komputera" title="Rys. 1) Schemat połączenia wyświetlacza, arduino i komputera"  />
+    <br /><span class="img-desc">Rys. 1) Schemat połączenia wyświetlacza, arduino i komputera</span>
+</p></p>
+<p>Komunikacja z oledem odbywa się po protokole I2C (wyprowadzenia SDA i SCL). Arduino posiada bibliotekę i przykład do obsługi takiego wyświetlacza. Należy zaimportować <strong>Adafruit_SSD1306</strong> i <strong>Adafruit_GFX</strong>. W przykładach Adafruit_SSD1306 znajdziemy kod dla wyświetlaczy 128x32 i 128x64 po I2C lub SPI. Przy I2C uwaga na adres urządzenia slave - u mnie 0x3C, niektóre urządzenia mogą mieć chyba 0x3D. Jest to wartość predefiniowana dla urządzenia. Arduino IDE w przykładach posiada <em>Wire/i2c_scanner.ino</em>, który wgrany i odpalony wypisze na terminal znalezione urządzenia i ich adresy.</p>
+<p>Szyna zajmuje piny 4-6 i 8-12. Pin 7 specjalnie <em>omijam</em> i łączę z wyjściem IOREQ z Z80. Na stronach Arduino w dokumentacji funkcji <a href="https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/"><code>attachInterrupt()</code></a> możemy znaleźć informację, które piny w którym modelu arduino mogą zostać zastosowane do zaimplementowania zewnętrznego przerwania. Dzięki temu zamiast w pętli głównej sprawdzać cyklicznie IOREQ, mogę podać która funkcja ma się wykonać kiedy przerwanie (w tym wypadku stan niski na pinie 7) się pojawi. Arduino przerwie wtedy wykonanie głównej pętli i wykona kod podanej funkcji. Dzięki temu nie martwię się czy czas na wykonanie głównego kodu będzie na tyle długi bym przegapił jakieś żądanie I/O.</p>
+<p>Przyszedł czas na kod dla mikrokontrolera. Obsługę można podzielić na 2 części. Wykonywanie zarejestrowanej obsługi przerwania zewnętrznego gdy na pinie 7-mym pojawi się zbocze opadające. Podczas tego zdarzenia odczytujemy dane z szyny i zapisuje je do globalnego bufora (zmienna <code>data</code>). Jest nim tablica 8 znakowa dla której mamy index ostatniego elementu - przesuwany przez obsługę przerwania i index pierwszego niewyświetlonego elementu przesuwany przez pętlę główną. To pętla główna odpowiada za wyświetlanie znaków na wyświetlaczu. Chcemy by obsługa przerwania była jak najlżejsza, dodatkowo niektóre funkcje nie są dostępne podczas przerwania. Dlatego nadchodzące znaki zapisujemy w buforze i pozwalamy pętli głównej gonić &ldquo;peleton&rdquo; pomiędzy przerwaniami.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// oled_display.ino
+</span><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;SPI.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;Wire.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;Adafruit_GFX.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;Adafruit_SSD1306.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define SCREEN_WIDTH 128 </span><span class="c1">// OLED display width, in pixels
+</span><span class="c1"></span><span class="cp">#define SCREEN_HEIGHT 64 </span><span class="c1">// OLED display height, in pixels
+</span><span class="c1"></span>
+<span class="c1">// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+</span><span class="c1"></span><span class="cp">#define OLED_RESET     -1 </span><span class="c1">// Reset pin # (or -1 if sharing Arduino reset pin)
+</span><span class="c1"></span><span class="n">Adafruit_SSD1306</span> <span class="nf">display</span><span class="p">(</span><span class="n">SCREEN_WIDTH</span><span class="p">,</span> <span class="n">SCREEN_HEIGHT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Wire</span><span class="p">,</span> <span class="n">OLED_RESET</span><span class="p">);</span>
+
+<span class="cp">#define D0 4
+</span><span class="cp">#define D1 5
+</span><span class="cp">#define D2 6
+</span><span class="cp">#define IOREQ 7
+</span><span class="cp">#define D3 8
+</span><span class="cp">#define D4 9
+</span><span class="cp">#define D5 10
+</span><span class="cp">#define D6 11
+</span><span class="cp">#define D7 12
+</span><span class="cp"></span>
+<span class="k">volatile</span> <span class="n">uint8_t</span> <span class="n">data</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="k">volatile</span> <span class="n">uint8_t</span> <span class="n">eInd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">uint8_t</span> <span class="n">bInd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">interruptHandler</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">uint8_t</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">uint8_t</span> <span class="n">pin</span> <span class="o">=</span> <span class="n">D0</span><span class="p">;</span> <span class="n">pin</span> <span class="o">&lt;=</span> <span class="n">D7</span><span class="p">;</span> <span class="o">++</span><span class="n">pin</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">pin</span> <span class="o">==</span> <span class="n">IOREQ</span><span class="p">)</span>
+        <span class="k">continue</span><span class="p">;</span>
+      <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">|</span><span class="n">digitalRead</span><span class="p">(</span><span class="n">pin</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">eInd</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">eInd</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">eInd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">printData</span><span class="p">(</span><span class="n">uint8_t</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">display</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="n">IOREQ</span><span class="p">,</span> <span class="n">INPUT_PULLUP</span><span class="p">);</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="n">uint8_t</span> <span class="n">pin</span> <span class="o">=</span> <span class="n">D0</span><span class="p">;</span> <span class="n">pin</span> <span class="o">&lt;=</span> <span class="n">D7</span><span class="p">;</span> <span class="o">++</span><span class="n">pin</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">pin</span> <span class="o">==</span> <span class="n">IOREQ</span><span class="p">)</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="n">pinMode</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">// SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+</span><span class="c1"></span>  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">display</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">SSD1306_SWITCHCAPVCC</span><span class="p">,</span> <span class="mh">0x3C</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// Address 0x3C for 128x64
+</span><span class="c1"></span>    <span class="k">for</span><span class="p">(;;);</span> <span class="c1">// Don&#39;t proceed, loop forever
+</span><span class="c1"></span>  <span class="p">}</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">clearDisplay</span><span class="p">();</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">display</span><span class="p">();</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">setTextSize</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">setTextColor</span><span class="p">(</span><span class="n">SSD1306_WHITE</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">setCursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">cp437</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+
+  <span class="n">attachInterrupt</span><span class="p">(</span><span class="n">digitalPinToInterrupt</span><span class="p">(</span><span class="n">IOREQ</span><span class="p">),</span> <span class="n">interruptHandler</span><span class="p">,</span> <span class="n">FALLING</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#34;?&gt; &#34;</span><span class="p">);</span>
+  <span class="n">display</span><span class="p">.</span><span class="n">display</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">bInd</span> <span class="o">==</span> <span class="n">eInd</span><span class="p">)</span> 
+    <span class="k">return</span><span class="p">;</span>
+  
+  <span class="n">printData</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">bInd</span><span class="o">++</span><span class="p">]);</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">bInd</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">bInd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Układ pozwala mi wyświetlić 1 ekran (brak zaimplementowanego przewijania). Jest trochę zbyt mały bym chciał docelowo go zastosować w mojej retro maszynie, dlatego nie będę go rozwijał. Pozwolił mi zweryfikować, że komputer działa i potrafi wypisać &ldquo;HELL&rdquo;. Docelowo nawet do pierwszej wersji szukam czegoś odrobinę większego: 320x280, może 640x480 i kolorowego, by móc zaimplementować również tryb graficzny.</p>
+<p>A jeśli chodzi o konstrukcję &ldquo;poważnej&rdquo; karty graficznej obsługującej ekran VGA to polecam fajny filmik Bena Eatera <a href="https://www.youtube.com/watch?v=l7rce6IQDWs&amp;t=8s">The world&rsquo;s worst video card?</a> i <a href="https://www.youtube.com/watch?v=uqY3FMuMuRo">World&rsquo;s worst video card? The exciting conclusion</a>.</p>
+<h2 id="linki">Linki</h2>
+<ul>
+<li>[<a href="https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/">1</a>] <a href="https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/">Arduino.cc: attachInterrupt()</a></li>
+<li>[<a href="https://www.youtube.com/watch?v=l7rce6IQDWs&amp;t=8s">2</a>] <a href="https://www.youtube.com/watch?v=l7rce6IQDWs&amp;t=8s">Ben Eater: Najgorsza na świecie karta graficzna?</a></li>
+<li>[<a href="https://www.youtube.com/watch?v=uqY3FMuMuRo">3</a>] <a href="https://www.youtube.com/watch?v=uqY3FMuMuRo">Ben Eater: Najgorsza na świecie karta graficzna? Ekscytująca konkluzja.</a></li>
+</ul>
+</main>
+
+  <footer>
+  <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <hr/>
+  © <a href="https://jurek333.github.io">Jurek333</a> 2020
+  
+  </footer>
+  </body>
+</html>
