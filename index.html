@@ -42,6 +42,33 @@
   
   <li>
     <div class="article-meta">
+      <a href="/posts/gal16v8/">
+        <span class="date">2020 0530</span>
+        <span class="post-title">GAL16V8 - logika</span>
+      </a>
+    </div>
+    <div class="post-description">
+      Procesor Z80 komunikując się z zewnętrznymi urządzeniami ustawia numer urządzenia na dolnym bajcie adresu, a zainteresowane urządzenie powinno na tej podstawie zacząć działać. Chcąc wprowadzić zewnętrzne 2 rejestry konfigurujące pracę komputera powinienem przypisać im odpowiednie 8b adresy (np. 0x00 i 0x01) i w zależności, który będzie ustawiony podczas IOREQ, ten rejestr aktualizować wartościami z szyny danych. Mógłbym ułożyć kilka bramek logicznych które by sprawdzały czy adres wynosi 0x00 czy 0x01 i z IOREQ tworzyć puls odświeżający właściwy rejestr, ale to oznacza dużo miejsca na wiele bramek. Na miarę swoich czasów wygodnym rozwiązaniem jest Generic Array Logic.
+
+      <div class="footbar">
+        <span><i class="far fa-clock"></i> 5 min.
+          
+          / Z80PC
+          
+          
+          / Retro / FPGA
+          
+        </span>
+        <div class="more-link">
+          <a href="/posts/gal16v8/">więcej...</a>
+        </div>
+      </div>
+      </span>
+    </div>
+  </li>
+  
+  <li>
+    <div class="article-meta">
       <a href="/posts/mini-screen-for-z80/">
         <span class="date">2020 0511</span>
         <span class="post-title">Mini ekran dla Z80</span>
@@ -51,7 +78,7 @@
       Retro komputer odprawiający swoją magię w czeluściach scalaków bez wizualnej reprezentacji to nie najefektywniejsza rozrywka. Wykonam więc PoC z Arduino Micro i niewielkiego ekranu OLED kartę graficzną i ekran.
 
       <div class="footbar">
-        <span><i class="far fa-clock"></i> 4 min.
+        <span><i class="far fa-clock"></i> 5 min.
           
           / Z80PC
           

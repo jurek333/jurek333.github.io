@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[jurek333]</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/syntax.css" />
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/fontawesome.min.css" />
+  
+</head>
+
+<body>
+  <nav>
+    <ul class="menu">
+      
+      <li>
+        <a href="/"><i class="fas fa-server"></i>&nbsp;Strona główna</a>
+      </li>
+      
+      <li>
+        <a href="/dziedziny/"><i class="fas fa-journal-whills"></i>&nbsp;Lista tematów</a>
+      </li>
+      
+      <li>
+        <a href="/zagadnienia/"><i class="fas fa-tags"></i>&nbsp;Zagadnienia</a>
+      </li>
+      
+    </ul>
+  </nav>
+<div class="article-meta">
+    <h1>
+        <span class="date">2020 0530</span>
+        <span class="title">GAL16V8 - logika</span>
+    </h1>
+    <div style="clear:both;"></div>
+    
+</div>
+
+<main>
+    <p>Procesor Z80 komunikując się z zewnętrznymi urządzeniami ustawia numer urządzenia na dolnym bajcie adresu, a zainteresowane urządzenie powinno na tej podstawie zacząć działać. Chcąc wprowadzić zewnętrzne 2 rejestry konfigurujące pracę komputera powinienem przypisać im odpowiednie 8b adresy (np. 0x00 i 0x01) i w zależności, który będzie ustawiony podczas IOREQ, ten rejestr aktualizować wartościami z szyny danych.
+Mógłbym ułożyć kilka bramek logicznych które by sprawdzały czy adres wynosi 0x00 czy 0x01 i z IOREQ tworzyć puls odświeżający właściwy rejestr, ale to oznacza dużo miejsca na wiele bramek. Na miarę swoich czasów wygodnym rozwiązaniem jest Generic Array Logic.</p>
+<h2 id="sprzęt">Sprzęt</h2>
+<p><strong>GAL</strong> (<a href="https://pl.wikipedia.org/wiki/GAL_(elektronika)">Generic Array Logic<sup>1</sup></a>) to układ scalony pozwalający zaprogramować na warstwie sprzętowej strukturę logiczną. Jest następcą <strong>PAL</strong> (<a href="https://pl.wikipedia.org/wiki/Programmable_Array_Logic">Programmable Array Logic<sup>2</sup></a>) i poprzednikiem dzisiejszego <strong>FPGA</strong> (<a href="https://pl.wikipedia.org/wiki/Bezpo%C5%9Brednio_programowalna_macierz_bramek">Field-programmable Gate Array<sup>3</sup></a>). Zasada działania nie jest skomplikowana, ale może pogubić czytelnika dokumentacji. Podstawą jest programowalna matryca, której wynik jest przetwarzany dalej przez - OLMC (Output Logic Macrocell) - programowalną makrokomórkę. Najtrafniej wg mnie pokazuje to fragment układu PALCE16V8 (<a href="#%5Bpalce16v8_partial%5D">Rys. 1</a>). Po lewej stronie widać matrycę. Do każdego wyjścia/OLMC mamy przypisane w tym przypadku 8 poziomych linii (np. 16-23). Do każdej z tych linii możemy podpiąć dowolne wejście lub jego negację oraz dowolne wyjście lub jego negację (lnie pionowe 0-31). Tak ustawione &ldquo;poziome linie&rdquo; są przetwarzane przez OLMC wg ustawionej konfiguracji. Zależnie od układu OLMC ma różne możliwości konfiguracji i pracy, programowalna matryca między modelami zazwyczaj różni się ilością wejść, możliwością dopięcia wyniku lub nie, itp.</p>
+<p>Przy studiowaniu dokumentacji tego typu układów trzeba naprawdę dobrze przestudiować tryby pracy i operacje wykonywane na OLMC. Często niektóre wyjścia układu nie oferują takich samych możliwości jak pozostałe, OLMC może też pracować w kliku trybach, i zależnie od nich układ może mieć więcej lub mniej wejść/wyjść efektywnych. To naprawdę fascynujące układy.</p>
+<p><p class="img">
+    <img id="palce16v8_partial" src="/Z80/Logic/PALCE16V8_partial.png"  alt="Rys. 1) Fragment PALCE16V8" title="Rys. 1) Fragment PALCE16V8"  />
+    <br /><span class="img-desc">Rys. 1) Fragment PALCE16V8</span>
+</p></p>
+<p>W dalszej części będę używał <strong>GAL16V8A</strong>, układu o 8 wejściach i 8 wyjściach do interpretacji 8b adresu by wskazać właściwy układ/urządzenie. A gdzie 9 bit IOREQ? No właśnie, gdy OLMC jest w trybie &ldquo;prostym&rdquo;, pin 1-szy i 11-ty zazwyczaj zarezerwowane na CLK i OE, są dostępne jako wejścia (<a href="#gal16v8_partial">Rys. 2</a>).</p>
+<p><p class="img">
+    <img id="gal16v8_partial" src="/Z80/Logic/GAL16V8_partial.png"  alt="Rys. 2) Fragment GAL16V8 w Simple Mode" title="Rys. 2) Fragment GAL16V8 w Simple Mode"  />
+    <br /><span class="img-desc">Rys. 2) Fragment GAL16V8 w Simple Mode</span>
+</p>
+<p class="img">
+    <img id="gal16v8_olmc" src="/Z80/Logic/GAL16V8_OLMC_sipmle.png"  alt="Rys. 3) OLMC w Simple Mode" title="Rys. 3) OLMC w Simple Mode"  />
+    <br /><span class="img-desc">Rys. 3) OLMC w Simple Mode</span>
+</p></p>
+<p>Dokumentacja daje pełniejszy opis możliwość. Tutaj skupiłem się tylko na tym co mi potrzebne by wykonać prosty &ldquo;chip selector&rdquo;. Chcę sprawdzić czy na adresie jest 0x00 czy 0x01 i jeśli jest IOREQ to na wyjściu 12 lub 13 dać wysoki sygnał (mój rejestr Flip-Flop zatrzaskuje się na przejściu z niskiego do wysokiego stanu CLK).</p>
+<p>Logikę potrzebnego układu można zapisać jako:</p>
+<pre><code>Dev0 = !A0 &amp; !A1 &amp; !A2 &amp; !A3 &amp; !A4 &amp; !A5 &amp; !A6 &amp; !A7 &amp; !IOREQ
+Dev1 = A0 &amp; !A1 &amp; !A2 &amp; !A3 &amp; !A4 &amp; !A5 &amp; !A6 &amp; !A7 &amp; !IOREQ
+</code></pre><h2 id="oprogramowanie">Oprogramowanie</h2>
+<p>Zatem jak zaprogramować ten układ? Ja użyłem programu <strong>WinCupl</strong>, który można pobrać <a href="https://www.microchip.com/design-centers/fpgas-and-plds/splds-cplds/pld-design-resources">tutaj</a>. Przy opisie programu znajduje się klucz do programu potrzebny po instalacji programu (program jest darmowy, nie trzeba się też rejestrować, trzeba tylko skopiować i użyć podany <em>serial number</em>). Minusem jest fakt, że program dostępny jest tylko na platformę Windows. Posłuży nam on do skompilowania kodu <em>CUPL</em> do pliku *<strong>.jed</strong>.</p>
+<p>Kod dla scalaka:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">Name</span> <span class="n">DEVSELECT</span> <span class="p">;</span>
+<span class="n">Partno</span> <span class="n">B107A05</span> <span class="p">;</span>
+<span class="n">Date</span> <span class="mi">30</span><span class="o">/</span><span class="mo">05</span><span class="o">/</span><span class="mi">20</span> <span class="p">;</span>
+<span class="n">Revision</span> <span class="mo">01</span> <span class="p">;</span>
+<span class="n">Designer</span> <span class="n">JUREK</span> <span class="p">;</span>
+<span class="n">Company</span> <span class="n">JUREK</span> <span class="mi">333</span> <span class="p">;</span>
+<span class="n">Assembly</span> <span class="n">P8BC</span> <span class="p">;</span>
+<span class="n">Location</span> <span class="n">U18</span> <span class="p">;</span>
+<span class="n">Device</span> <span class="n">g16v8a</span> <span class="p">;</span>
+<span class="n">Format</span> <span class="n">j</span> <span class="p">;</span>
+
+<span class="cm">/** Inputs **/</span>
+<span class="n">Pin</span> <span class="mi">1</span> <span class="o">=</span> <span class="n">IOREQ</span><span class="p">;</span>
+<span class="n">Pin</span> <span class="p">[</span><span class="mf">2..9</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">A0</span><span class="p">.</span><span class="mf">.7</span><span class="p">];</span> 
+
+<span class="cm">/** Outputs **/</span>
+<span class="n">Pin</span> <span class="mi">12</span> <span class="o">=</span> <span class="n">Dev0</span><span class="p">;</span> <span class="cm">/* Register 1 */</span>
+<span class="n">Pin</span> <span class="mi">13</span> <span class="o">=</span> <span class="n">Dev1</span><span class="p">;</span> <span class="cm">/* Register 2 */</span>
+
+<span class="cm">/** Logic Equations **/</span>
+<span class="n">Dev0</span> <span class="o">=</span> <span class="o">!</span><span class="n">IOREQ</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A0</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A1</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A2</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A3</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A4</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A5</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A6</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A7</span><span class="p">;</span>
+<span class="n">Dev1</span> <span class="o">=</span> <span class="o">!</span><span class="n">IOREQ</span> <span class="o">&amp;</span> <span class="n">A0</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A1</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A2</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A3</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A4</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A5</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A6</span> <span class="o">&amp;</span> <span class="o">!</span><span class="n">A7</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Pierwsze 10 linijek to informacje nagłówkowe. Szczególną uwagę należy zwrócić na 2 z nich: <em>Device</em> i <em>Format</em>. Device określa urządzenie które programujemy, wprowadzenie tutaj złej wartości skończy się błędem kompilacji lub niewłaściwym plikiem jed (dla innego scalaka). Format określa plik wynikowy, <em>j</em> oznacza, że chcemy na wyjściu mieć plik jed.</p>
+<p>W dalszej części definiujemy/nazywamy wejścia i wyjścia, których użyjemy w kodzie. I w końcu w liniach 21-22 logikę, którą chcemy zaimplementować. Podczas kompilacji nasze reguły zostaną wg specyfikacji urządzenia przetłumaczone na odpowiednią konfigurację programowalnej macierzy i makrokomórek. Dzięki temu nie musimy się martwić odcyfrowywaniem które linie łączyć. Dodatkowo kompilator może wprowadzić optymalizacje i minimalizacje kodu.</p>
+<p>Po skompilowaniu plik devselect.jed wygląda tak (z dokładnością do przedstawienia znaków niewyświetlanych [STX]/[ETX]):</p>
+<pre><code>[STX]
+CUPL(WM)        5.0a
+Device          g16v8as  Library DLIB-h-40-2
+Created         Sat May 30 05:44:33 2020
+Name            DEVSELECT 
+Partno          B107A05 
+Revision        01 
+Date            30/05/20 
+Designer        JUREK 
+Company         JUREK 333 
+Assembly        P8BC 
+Location        U18 
+*QP20 
+*QF2194 
+*G0 
+*F0 
+*L01536 01101011101110111011101110111011
+*L01792 10101011101110111011101110111011
+*L02048 00000011010000100011000100110000
+*L02080 00110111010000010011000000110101
+*L02112 00100000111111001111111111111111
+*L02144 11111111111111111111111111111111
+*L02176 111111111111111110
+*C12D5
+*[ETX]8402
+</code></pre><p>Używając programatora, który obsługuje GAL16V8 i takiego pliku jed można zaprogramować układ i od tego momentu realizuje on wgraną strukturę logiczną i to z szybkością &ldquo;sprzętową&rdquo;.</p>
+<p>W ten sposób otrzymałem układ który razem z dwoma 8 bitowymi rejestrami 74HC574 połączony z szyną danych i młodszym bajtem adresu stworzy mi dwa zewnętrzne rejestry do sterowania komputerem. Już wiem, że 2b zajmie banking pamięci, może 1b przeznaczę na kontrolowanie zegara systemowego. W sumie da mi to 16 bitów którymi system będzie mógł konfigurować/sterować pracą komputera.</p>
+<h2 id="linki">Linki</h2>
+<ul>
+<li>[<a href="https://pl.wikipedia.org/wiki/GAL_(elektronika)">1</a>] <a href="https://pl.wikipedia.org/wiki/GAL_(elektronika)">https://pl.wikipedia.org/wiki/GAL_(elektronika)</a></li>
+<li>[<a href="https://pl.wikipedia.org/wiki/Programmable_Array_Logic">2</a>] <a href="https://pl.wikipedia.org/wiki/Programmable_Array_Logic">https://pl.wikipedia.org/wiki/Programmable_Array_Logic</a></li>
+<li>[<a href="https://pl.wikipedia.org/wiki/Bezpo%C5%9Brednio_programowalna_macierz_bramek">3</a>] <a href="https://pl.wikipedia.org/wiki/Bezpo%C5%9Brednio_programowalna_macierz_bramek">https://pl.wikipedia.org/wiki/Bezpośrednio_programowalna_macierz_bramek</a></li>
+<li>[<a href="https://www.microchip.com/design-centers/fpgas-and-plds/splds-cplds/pld-design-resources">4</a>] <a href="https://www.microchip.com/design-centers/fpgas-and-plds/splds-cplds/pld-design-resources">https://www.microchip.com/design-centers/fpgas-and-plds/splds-cplds/pld-design-resources</a></li>
+</ul>
+</main>
+
+  <footer>
+  <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <hr/>
+  © <a href="https://jurek333.github.io">Jurek333</a> 2020
+  
+  </footer>
+  </body>
+</html>

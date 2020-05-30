@@ -6,10 +6,28 @@
     <description>Recent content in Zagadnienia on [jurek333]</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>pl-PL</language>
-    <lastBuildDate>Mon, 11 May 2020 19:44:45 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2020 13:05:13 +0200</lastBuildDate>
     
 	<atom:link href="http://jurek333.github.io/zagadnienia/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>FPGA</title>
+      <link>http://jurek333.github.io/zagadnienia/fpga/</link>
+      <pubDate>Sat, 30 May 2020 13:05:13 +0200</pubDate>
+      
+      <guid>http://jurek333.github.io/zagadnienia/fpga/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Retro</title>
+      <link>http://jurek333.github.io/zagadnienia/retro/</link>
+      <pubDate>Sat, 30 May 2020 13:05:13 +0200</pubDate>
+      
+      <guid>http://jurek333.github.io/zagadnienia/retro/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Arduino</title>
@@ -17,15 +35,6 @@
       <pubDate>Mon, 11 May 2020 19:44:45 +0200</pubDate>
       
       <guid>http://jurek333.github.io/zagadnienia/arduino/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Retro</title>
-      <link>http://jurek333.github.io/zagadnienia/retro/</link>
-      <pubDate>Mon, 11 May 2020 19:44:45 +0200</pubDate>
-      
-      <guid>http://jurek333.github.io/zagadnienia/retro/</guid>
       <description></description>
     </item>
     

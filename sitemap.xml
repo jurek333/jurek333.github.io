@@ -4,8 +4,43 @@
   
   <url>
     <loc>http://jurek333.github.io/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/dziedziny/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/zagadnienia/fpga/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/posts/gal16v8/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/posts/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/zagadnienia/retro/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/dziedziny/z80pc/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jurek333.github.io/zagadnienia/</loc>
+    <lastmod>2020-05-30T13:05:13+02:00</lastmod>
   </url>
   
   <url>
@@ -14,32 +49,7 @@
   </url>
   
   <url>
-    <loc>http://jurek333.github.io/dziedziny/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://jurek333.github.io/posts/mini-screen-for-z80/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://jurek333.github.io/posts/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://jurek333.github.io/zagadnienia/retro/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://jurek333.github.io/dziedziny/z80pc/</loc>
-    <lastmod>2020-05-11T19:44:45+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://jurek333.github.io/zagadnienia/</loc>
     <lastmod>2020-05-11T19:44:45+02:00</lastmod>
   </url>
   

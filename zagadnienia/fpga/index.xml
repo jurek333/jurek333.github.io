@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>FPGA on [jurek333]</title>
+    <link>http://jurek333.github.io/zagadnienia/fpga/</link>
+    <description>Recent content in FPGA on [jurek333]</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>pl-PL</language>
+    <lastBuildDate>Sat, 30 May 2020 13:05:13 +0200</lastBuildDate>
+    
+	<atom:link href="http://jurek333.github.io/zagadnienia/fpga/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GAL16V8 - logika</title>
+      <link>http://jurek333.github.io/posts/gal16v8/</link>
+      <pubDate>Sat, 30 May 2020 13:05:13 +0200</pubDate>
+      
+      <guid>http://jurek333.github.io/posts/gal16v8/</guid>
+      <description>&lt;p&gt;Procesor Z80 komunikując się z zewnętrznymi urządzeniami ustawia numer urządzenia na dolnym bajcie adresu, a zainteresowane urządzenie powinno na tej podstawie zacząć działać. Chcąc wprowadzić zewnętrzne 2 rejestry konfigurujące pracę komputera powinienem przypisać im odpowiednie 8b adresy (np. 0x00 i 0x01) i w zależności, który będzie ustawiony podczas IOREQ, ten rejestr aktualizować wartościami z szyny danych.
+Mógłbym ułożyć kilka bramek logicznych które by sprawdzały czy adres wynosi 0x00 czy 0x01 i z IOREQ tworzyć puls odświeżający właściwy rejestr, ale to oznacza dużo miejsca na wiele bramek. Na miarę swoich czasów wygodnym rozwiązaniem jest Generic Array Logic.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
