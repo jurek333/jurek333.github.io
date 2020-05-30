@@ -104,7 +104,7 @@ void loop() {
 }
 ```
 
-Układ pozwala mi wyświetlić 1 ekran (brak zaimplementowanego przewijania). Jest trochę zbyt mały bym chciał docelowo go zastosować w mojej retro maszynie, dlatego nie będę go rozwijał. Pozwolił mi zweryfikować, że komputer działa i potrafi wypisać "HELL". Docelowo nawet do pierwszej wersji szukam czegoś odrobinę większego: 320x280, może 640x480 i kolorowego, by móc zaimplementować również tryb graficzny.
+Układ pozwala mi wyświetlić 1 ekran (brak zaimplementowanego przewijania). Jest trochę zbyt mały bym chciał docelowo go zastosować w mojej retro maszynie, dlatego nie będę go rozwijał. Pozwolił mi zweryfikować, że komputer działa i potrafi wypisać "HELL" ([YT][4]). Docelowo nawet do pierwszej wersji szukam czegoś odrobinę większego: 320x280, może 640x480 i kolorowego, by móc zaimplementować również tryb graficzny.
 
 A jeśli chodzi o konstrukcję "poważnej" karty graficznej obsługującej ekran VGA to polecam fajny filmik Bena Eatera [The world's worst video card?][2] i [World's worst video card? The exciting conclusion][3].
 
@@ -113,7 +113,9 @@ A jeśli chodzi o konstrukcję "poważnej" karty graficznej obsługującej ekran
  - [[1]] [Arduino.cc: attachInterrupt()][1]
  - [[2]] [Ben Eater: Najgorsza na świecie karta graficzna?][2]
  - [[3]] [Ben Eater: Najgorsza na świecie karta graficzna? Ekscytująca konkluzja.][3]
+ - [[4]] [Z80, PoC karty graficznej i bus monitor w działaniu][4]
 
-[1]: https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
+ [1]: https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
  [2]: https://www.youtube.com/watch?v=l7rce6IQDWs&t=8s
  [3]: https://www.youtube.com/watch?v=uqY3FMuMuRo
+ [4]: https://www.youtube.com/watch?v=2SY2HrHUSgE
