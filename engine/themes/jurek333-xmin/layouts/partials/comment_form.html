@@ -1,0 +1,43 @@
+<section class="comment_form">
+    <a id="comment-form"></a>
+
+    <form class="post-new-comment" method="POST" action="{{ .Site.Params.staticman_api }}">
+        <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#post-submitted">
+        <input type="hidden" name="options[redirectError]" value="{{ .Permalink }}#post-error">
+        <input type="hidden" name="options[entryId]" value="{{ .File.BaseFileName }}">
+        <input type="hidden" name="options[slug]" value="{{ .Permalink }}">
+        <input type="hidden" name="options[origin]" value="{{ .Permalink }}">
+        <input type="hidden" name="options[parent]" value="{{ .File.BaseFileName }}">
+        <input type="hidden" name="fields[reply_to]" value="">
+
+        <fieldset>
+            <input name="fields[name]" type="text" class="post-comment-field" placeholder="Your name">
+        </fieldset>
+
+        <fieldset>
+            <textarea name="fields[body]" class="post-comment-field"
+                placeholder="Your message. Feel free to use Markdown." rows="10"></textarea>
+        </fieldset>
+
+        <fieldset>
+            <input type="submit" class="post-comment-field btn" value="Submit" id="submit_button">
+        </fieldset>
+
+    </form>
+
+    <div id="post-submitted" class="dialog">
+        <h3>Thank you</h3>
+        <p>Your post has been submitted and will be published once it has been approved.</p>
+        {{ if (.Site.Params.githubPullURL) }}
+        <p><a href="{{ .Site.Params.githubPullURL }}">Click here</a> to see the pull request you generated.</p>
+        {{ end }}
+        <p><a href="#" class="btn">OK</a></p>
+    </div>
+
+    <div id="post-error" class="dialog">
+        <h3>OOPS!</h3>
+        <p>Your post has not been submitted. Please return to the page and try again. Thank You!</p>
+        <p><a href="#" class="btn">OK</a></p>
+    </div>
+
+</section>
