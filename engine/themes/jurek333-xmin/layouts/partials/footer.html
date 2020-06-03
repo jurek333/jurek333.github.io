@@ -1,9 +1,11 @@
-  <footer>
+<footer>
   {{ partial "foot_custom.html" . }}
   {{ with .Site.Params.footer }}
-  <hr/>
+  <hr />
   {{ . | markdownify }}
   {{ end }}
-  </footer>
-  </body>
+  {{ template "_internal/google_analytics_async.html" . }}
+</footer>
+</body>
+
 </html>

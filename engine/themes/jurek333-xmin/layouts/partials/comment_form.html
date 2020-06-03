@@ -2,20 +2,20 @@
     <a id="comment-form"></a>
 
     <form class="post-new-comment" method="POST" action="{{ .Site.Params.staticman_api }}">
-        <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#post-submitted">
+        <!-- <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#post-submitted">
         <input type="hidden" name="options[redirectError]" value="{{ .Permalink }}#post-error">
         <input type="hidden" name="options[entryId]" value="{{ .File.BaseFileName }}">
         <input type="hidden" name="options[slug]" value="{{ .Permalink }}">
         <input type="hidden" name="options[origin]" value="{{ .Permalink }}">
-        <input type="hidden" name="options[parent]" value="{{ .File.BaseFileName }}">
-        <input type="hidden" name="fields[reply_to]" value="">
+        <input type="hidden" name="options[parent]" value="{{ .File.BaseFileName }}"> -->
+        <!-- <input type="hidden" name="fields[reply_to]" value=""> -->
 
         <fieldset>
             <input name="fields[name]" type="text" class="post-comment-field" placeholder="Your name">
         </fieldset>
 
         <fieldset>
-            <textarea name="fields[body]" class="post-comment-field"
+            <textarea name="fields[message]" class="post-comment-field"
                 placeholder="Your message. Feel free to use Markdown." rows="10"></textarea>
         </fieldset>
 

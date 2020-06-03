@@ -6,6 +6,7 @@ contentDir = "../content"
 defaultContentLanguage = "pl"
 publishDir = "../public"
 staticDir = "../static"
+googleAnalytics = "UA-59557559-2"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 footnotereturnlinkcontents = "↩"
@@ -52,4 +53,4 @@ unsafe= true
 [params]
     description = "mov [jurek333], al"
     footer = "&copy; [Jurek333](https://jurek333.github.io) 2020"
-    staticman_api = "https://jurek333-comments.azurewebsites.net/v2/entry/jurek333/jurek333.github.io/comments"
+    staticman_api = "https://jurek333-comments.azurewebsites.net/v2/entry/jurek333/jurek333.github.io/comments/comments"
