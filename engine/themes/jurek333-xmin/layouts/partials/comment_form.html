@@ -1,43 +1,46 @@
-<section class="comment_form">
+<section class="comment-form">
     <a id="comment-form"></a>
 
     <form class="post-new-comment" method="POST" action="{{ .Site.Params.staticman_api }}">
-        <!-- <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#post-submitted">
-        <input type="hidden" name="options[redirectError]" value="{{ .Permalink }}#post-error">
-        <input type="hidden" name="options[entryId]" value="{{ .File.BaseFileName }}">
+        <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#comment-submitted">
+        <input type="hidden" name="options[entryId]" value="{{ .UniqueID }}">
+        <input type="hidden" name="options[redirectError]" value="{{ .Permalink }}#comment-error">
+        <!--         
         <input type="hidden" name="options[slug]" value="{{ .Permalink }}">
         <input type="hidden" name="options[origin]" value="{{ .Permalink }}">
         <input type="hidden" name="options[parent]" value="{{ .File.BaseFileName }}"> -->
         <!-- <input type="hidden" name="fields[reply_to]" value=""> -->
 
         <fieldset>
-            <input name="fields[name]" type="text" class="post-comment-field" placeholder="Your name">
+            <input name="fields[name]" type="text" class="post-comment-field" placeholder="Imię/Nick">
         </fieldset>
 
         <fieldset>
-            <textarea name="fields[message]" class="post-comment-field"
-                placeholder="Your message. Feel free to use Markdown." rows="10"></textarea>
+            <textarea name="fields[message]" class="post-comment-field" placeholder="Treść komentarza"
+                rows="5"></textarea>
         </fieldset>
 
         <fieldset>
-            <input type="submit" class="post-comment-field btn" value="Submit" id="submit_button">
+            <input type="submit" class="btn post-comment-field" value="Wyślij" id="submit_button">
         </fieldset>
 
     </form>
 
-    <div id="post-submitted" class="dialog">
-        <h3>Thank you</h3>
-        <p>Your post has been submitted and will be published once it has been approved.</p>
-        {{ if (.Site.Params.githubPullURL) }}
-        <p><a href="{{ .Site.Params.githubPullURL }}">Click here</a> to see the pull request you generated.</p>
-        {{ end }}
-        <p><a href="#" class="btn">OK</a></p>
+    <div id="comment-submitted" class="dialog">
+        <h3>Dziękuję</h3>
+        <p>
+            Twój komentarz został przesłany. Pojawi się na stronie po akceptacji
+            {{ if (.Site.Params.githubPullURL) }}
+            : <a href="{{ .Site.Params.githubPullURL }}">"Pull requesta"</a>
+            {{ end }}.
+        </p>
+        <div><a href="#" class="btn">OK</a></div>
     </div>
 
-    <div id="post-error" class="dialog">
-        <h3>OOPS!</h3>
-        <p>Your post has not been submitted. Please return to the page and try again. Thank You!</p>
-        <p><a href="#" class="btn">OK</a></p>
+    <div id="comment-error" class="dialog">
+        <h3>Halt and catch fire!</h3>
+        <p>Nie udało się przesłać komentarza.</p>
+        <div><a href="#" class="btn">OK</a></div>
     </div>
 
 </section>
