@@ -4,7 +4,7 @@
     {{ $.Scratch.Add "hasComments" 0 }}
     {{ $entryId := .File.BaseFileName }}
 
-    {{ if in $.Site.Data.comments $entryId }}
+    {{ if ne $.Site.Data.comments nil }}
     {{ range $index, $comments := (index $.Site.Data.comments $entryId ) }}
     {{ $.Scratch.Set "hasComments" 1 }}
     <div class="post-comment">
