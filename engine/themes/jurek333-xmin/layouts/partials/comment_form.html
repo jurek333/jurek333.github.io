@@ -3,13 +3,8 @@
 
     <form class="post-new-comment" method="POST" action="{{ .Site.Params.staticman_api }}">
         <input type="hidden" name="options[redirect]" value="{{ .Permalink }}#comment-submitted">
-        <input type="hidden" name="options[entryId]" value="{{ .UniqueID }}">
+        <input type="hidden" name="options[entryId]" value="{{ .File.BaseFileName }}">
         <input type="hidden" name="options[redirectError]" value="{{ .Permalink }}#comment-error">
-        <!--         
-        <input type="hidden" name="options[slug]" value="{{ .Permalink }}">
-        <input type="hidden" name="options[origin]" value="{{ .Permalink }}">
-        <input type="hidden" name="options[parent]" value="{{ .File.BaseFileName }}"> -->
-        <!-- <input type="hidden" name="fields[reply_to]" value=""> -->
 
         <fieldset>
             <input name="fields[name]" type="text" class="post-comment-field" placeholder="Imię/Nick">

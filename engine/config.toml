@@ -6,6 +6,7 @@ contentDir = "../content"
 defaultContentLanguage = "pl"
 publishDir = "../public"
 staticDir = "../static"
+dataDir = "../data"
 googleAnalytics = "UA-59557559-2"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]

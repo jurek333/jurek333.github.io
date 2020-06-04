@@ -115,10 +115,6 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
   text-decoration: overline;
 }
 
-
-.comment-form {
-
-}
 fieldset {
   border: none;
   margin-inline-start: 0px;
@@ -133,26 +129,23 @@ fieldset {
 }
 
 .post-comment {
-  background-color: #eee;
-  padding: 20px;
-  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .post-comment-header {
-  margin-bottom: 20px;
+  color: #6272a4;
 }
 
-.post-comment-avatar {
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 50%;
-}
-
-.post-comment-info {
+.post-comment-name {
   display: inline-block;
   margin-left: 20px;
   margin-bottom: 0;
   vertical-align: middle;
+
+  text-align: right;
+  margin-right: 3em;
+  padding-bottom: .3em;
+  float: right;
 }
 
 .post-comment-field {
