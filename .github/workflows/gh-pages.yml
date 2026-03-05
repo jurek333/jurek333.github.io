@@ -4,20 +4,25 @@ on:
     push:
         branches:
             - source
+    pull_request:
 
 jobs:
     deploy:
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-22.04
+        permissions:
+            contents: write
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
               with:
                   submodules: true
                   fetch-depth: 0
 
             - name: Setup Hugo
-              uses: peaceiris/actions-hugo@v2.4.11
+              uses: peaceiris/actions-hugo@v3
               with:
-                  hugo-version: '0.69.2'
+                  hugo-version: '0.119.0'
 
             - name: config
               run: cd engine && hugo config
@@ -26,8 +31,8 @@ jobs:
               run: (cd engine; hugo --config ./config.toml;)
 
             - name: Deploy
-              uses: peaceiris/actions-gh-pages@v3
+              uses: peaceiris/actions-gh-pages@v4
+              if: github.ref == 'refs/heads/source'
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_branch: master
-                  full_commit_message: ${{ github.event.head_commit.message }}
+                  publish_dir: ./public
