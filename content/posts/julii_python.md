@@ -43,7 +43,7 @@ Kolorujemy przestrzeń nienależącą do zbioru wg tego jak 'szybko' punkt przek
         return self.pallete.to_rgb(N)
 ```
 
-W praktyce nie sprawdzamy zbieżności 'w nieskończoność', a na przykład w `N` krokach (maksymalna ilość kolorów), jeśli jednak z `N` kolorów w praktyce dostalemi ich znacznie mniej to może trzeba podnieść 'granice sprawdzania zbieżności' (`4.` w przykładzie).
+W praktyce nie sprawdzamy zbieżności 'w nieskończoność', a na przykład w `N` krokach (maksymalna ilość kolorów), jeśli jednak z `N` kolorów w praktyce dostajemy ich znacznie mniej to może trzeba podnieść 'granice sprawdzania zbieżności' (`4.` w przykładzie).
 
 ## Linki
  
