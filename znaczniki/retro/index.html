@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro - [jurek333]</title>
+    <meta name="description" content="mov [jurek333], al">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
+</head>
+<body>
+    <header class="site-header">
+    <div class="container">
+        <div class="site-branding">
+            
+            <a href="http://jurek333.github.io/" class="logo-link">
+                <img src="/img/kapibara_transparent.webp" alt="[jurek333]" class="logo logo-light">
+                
+                <img src="/img/kapibara_transparent.webp" alt="[jurek333]" class="logo logo-dark">
+                
+            </a>
+            
+            <div class="site-info">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                            <span class="theme-toggle-icon">🌙</span>
+                    </button>
+                <h1 class="site-title">
+                    <a href="http://jurek333.github.io/">
+                        [jurek333]
+                    </a>
+                </h1>
+                
+            </div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                
+                <li><a href="/">📐Główna</a></li>
+                
+                <li><a href="/tematy/">📝Tematy</a></li>
+                
+                <li><a href="/znaczniki/">🏷️Znaczniki</a></li>
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+    
+    <main class="container">
+        
+<div class="list-page">
+    <header class="list-header">
+        <h1>Retro</h1>
+        
+    </header>
+    
+    <div class="posts-list">
+        
+        <article class="post-card">
+            <div class="post-header">
+                <h2 class="post-title">
+                    <time class="post-date-prefix" datetime="2020 0530">
+                        2020 0530
+                    </time>
+                    <a href="/posts/gal16v8/">GAL16V8 - logika</a>
+                </h2>
+            </div>
+            
+            
+            <div class="post-summary">
+                <p>Procesor Z80 komunikując się z zewnętrznymi urządzeniami ustawia numer urządzenia na dolnym bajcie adresu, a zainteresowane urządzenie powinno na tej podstawie zacząć działać. Chcąc wprowadzić zewnętrzne dwa rejestry konfigurujące pracę komputera powinienem przypisać im odpowiednie 8 bitowe adresy (np. 0x00 i 0x01) i w zależności, który będzie ustawiony podczas IOREQ, ten rejestr aktualizować wartościami z szyny danych.
+Mógłbym ułożyć kilka bramek logicznych które sprawdziły by czy adres wynosi 0x00 czy 0x01 i z sygnałem IOREQ tworzyć puls odświeżający właściwy rejestr, ale to oznacza dużo miejsca i zasilania dla wielu bramek logicznych. Zamiast tego użyję jednego układu scalonego: Generic Array Logic.</p>
+            </div>
+            
+            
+            
+            <div class="post-tags">
+                
+                <span class="tag">#Retro</span>
+                
+                <span class="tag">#FPGA</span>
+                
+            </div>
+            
+            <a href="/posts/gal16v8/" class="read-more">Read more →</a>
+        </article>
+        
+        <article class="post-card">
+            <div class="post-header">
+                <h2 class="post-title">
+                    <time class="post-date-prefix" datetime="2020 0511">
+                        2020 0511
+                    </time>
+                    <a href="/posts/mini-screen-for-z80/">Mini ekran dla Z80</a>
+                </h2>
+            </div>
+            
+            
+            <div class="post-summary">
+                <p>Retro komputer odprawiający swoją magię w czeluściach scalaków bez wizualnej reprezentacji to nie najefektywniejsza rozrywka. Wykonam więc PoC z Arduino Micro i niewielkiego ekranu OLED <em>kartę graficzną</em> i ekran.</p>
+            </div>
+            
+            
+            
+            <div class="post-tags">
+                
+                <span class="tag">#Retro</span>
+                
+                <span class="tag">#Arduino</span>
+                
+            </div>
+            
+            <a href="/posts/mini-screen-for-z80/" class="read-more">Read more →</a>
+        </article>
+        
+        <article class="post-card">
+            <div class="post-header">
+                <h2 class="post-title">
+                    <time class="post-date-prefix" datetime="2020 0506">
+                        2020 0506
+                    </time>
+                    <a href="/posts/z80-personal-computer-00/">Z80 Personal Computer</a>
+                </h2>
+            </div>
+            
+            
+            <div class="post-summary">
+                <p>Projekt 8 bitowego komputera osobistego opartego na procesorze Zilog Z80. Procesor ten trafił na rynek w 1976 roku. Jest on kompatybilny z Intelem 8080. Posiada 8-bitową szynę danych i 16-bitową szynę adresową. Najbardziej jest chyba znany z komputerów Sinclair ZX Spectrum i Elwro 800 Junior. Wciąż jest łatwo dostępny jako scalak DIP-40 i świetnie nadaje się do budowy domowego komputera.</p>
+            </div>
+            
+            
+            
+            <div class="post-tags">
+                
+                <span class="tag">#Retro</span>
+                
+                <span class="tag">#CPU</span>
+                
+            </div>
+            
+            <a href="/posts/z80-personal-computer-00/" class="read-more">Read more →</a>
+        </article>
+        
+    </div>
+</div>
+
+    </main>
+    
+    <footer class="site-footer">
+    <div class="container">
+        <div class="footer-content">
+            <p class="blink-cursor">_</p>
+            <p>&copy; 2026 [jurek333]. Built with <a href="https://gohugo.io">Hugo</a> & Retro Tech theme.</p>
+            
+        </div>
+    </div>
+</footer>
+
+    
+    <script src="/js/theme-toggle.js"></script>
+</body>
+</html>
