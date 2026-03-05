@@ -28,7 +28,7 @@ Licba zespolona $c \in C$ jest parametrem zbioru, dyktuje kształt tego zbioru. 
 
 Z definicji zbioru wynika, że tutaj mamy do czynienia z 2-ma wynikami. Punkt należy do zbioru lub nie. Dwa kolory. To skąd te wielokolorowe obrazy?
 
-Kolorujemy przestrzeń nienależącą do zbioru wg tego jak 'szybko' punkt przekracza założoną granicę / wychodzi z 'pasa' (w przykładowym kodzie [-4, 4]):
+Kolorujemy przestrzeń nienależącą do zbioru, kolorujemy wg tego jak 'szybko' punkt przekracza założoną granicę / wychodzi z 'pasa' (w przykładowym kodzie [-4, 4]):
 
 ```python
     def julii(self, p: JuliiPoint):
