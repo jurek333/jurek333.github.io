@@ -1,0 +1,51 @@
+baseURL = "https://example.com/"
+languageCode = "en-us"
+title = "Retro Tech Lab"
+theme = "retro-tech-theme"
+
+# Enable syntax highlighting
+[markup]
+  [markup.highlight]
+    style = "monokai"
+    lineNos = true
+    lineNumbersInTable = true
+
+[params]
+  description = "A technical blog about hobby electronics, low-level programming, and IT humor"
+  tagline = "cd ~/experiments && ./run_project.sh"
+  intro = "Exploring the intersection of **retro electronics**, **low-level programming**, and occasionally funny **IT memes**. Welcome to my digital workshop!"
+  syntaxHighlight = true
+  math = true  # Enable LaTeX math rendering
+  mainSections = ["posts"]
+  
+  # Logo images (120x120px recommended)
+  logo = "/images/logo-light.png"
+  logoDark = "/images/logo-dark.png"
+  
+  # Social links (optional)
+  [[params.social]]
+    name = "GitHub"
+    url = "https://github.com/yourusername"
+  
+  [[params.social]]
+    name = "Email"
+    url = "mailto:you@example.com"
+
+# Main menu
+[[menu.main]]
+  name = "Posts"
+  pre = "📝 "
+  url = "/posts/"
+  weight = 1
+
+[[menu.main]]
+  name = "Tags"
+  pre = "🏷️ "
+  url = "/tags/"
+  weight = 2
+
+[[menu.main]]
+  name = "About"
+  pre = "ℹ️ "
+  url = "/about/"
+  weight = 3

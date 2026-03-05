@@ -1,0 +1,28 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "main" }}
+<div class="list-page">
+    <header class="list-header">
+        <h1>{{ .Title }}</h1>
+        {{ if .Description }}
+        <p class="list-description">{{ .Description }}</p>
+        {{ end }}
+    </header>
+        
+    <div class="posts-list">
+        {{ range .Data.Tags }}
+        <article class="post-card">
+            <div class="post-header">
+                <h2 class="post-title">
+                    <time class="post-date-prefix" datetime="{{ .Date.Format "2006 0102" }}">
+                        {{ .Date.Format "2006 0102" }}
+                    </time>
+                    <a href="{{ .RelPermalink }}">{{ .Page.Title }}</a>
+                    ({{ .Count }})
+                </h2>
+            </div>
+        </article>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

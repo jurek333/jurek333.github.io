@@ -1,7 +1,7 @@
 baseURL = "http://jurek333.github.io/"
 languageCode = "pl-PL"
 title = "[jurek333]"
-theme = "jurek333-xmin"
+theme = "retro-tech-theme"
 contentDir = "../content"
 defaultContentLanguage = "pl"
 publishDir = "../public"
@@ -28,30 +28,34 @@ pygmentsUseClasses = true
 unsafe= true
 
 [taxonomies]
-  category = "dziedziny"
-  tags = "zagadnienia"
+  category = "tematy"
+  tags = "znaczniki"
 
 [permalinks]
     post = "/post/:year/:month/:day/:slug/"
     note = "/note/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "Strona główna"
+    name = "Główna"
     url = "/"
-    pre = "<i class=\"fas fa-server\"></i>"
+    pre = "📐"
     weight = 1
 [[menu.main]]
-    name = "Lista tematów"
-    url = "/dziedziny/"
-    pre = "<i class=\"fas fa-journal-whills\"></i>"
+    name = "Tematy"
+    url = "/tematy/"
+    pre = "📝"
     weight = 3
 [[menu.main]]
-    name = "Zagadnienia"
-    url = "/zagadnienia/"
-    pre = "<i class=\"fas fa-tags\"></i>"
+    name = "Znaczniki"
+    url = "/znaczniki/"
+    pre = "🏷️"
     weight = 4
 
 [params]
+    math = true
     description = "mov [jurek333], al"
-    footer = "&copy; [Jurek333](https://jurek333.github.io) 2020"
+    footer = "&copy; [Jurek333](https://jurek333.github.io) 2026"
     staticman_api = "https://jurek333-comments.azurewebsites.net/v2/entry/jurek333/jurek333.github.io/source/comments"
+    logo = "/img/kapibara_transparent.webp"
+    logoDark = "/img/kapibara_transparent.webp"
+    syntaxHighlight = true

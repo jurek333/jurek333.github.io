@@ -1,0 +1,34 @@
+<header class="site-header">
+    <div class="container">
+        <div class="site-branding">
+            {{ if .Site.Params.logo }}
+            <a href="{{ .Site.BaseURL }}" class="logo-link">
+                <img src="{{ .Site.Params.logo }}" alt="{{ .Site.Title }}" class="logo logo-light">
+                {{ if .Site.Params.logoDark }}
+                <img src="{{ .Site.Params.logoDark }}" alt="{{ .Site.Title }}" class="logo logo-dark">
+                {{ end }}
+            </a>
+            {{ end }}
+            <div class="site-info">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                            <span class="theme-toggle-icon">🌙</span>
+                    </button>
+                <h1 class="site-title">
+                    <a href="{{ .Site.BaseURL }}">
+                        {{ .Site.Title }}
+                    </a>
+                </h1>
+                {{ if .Site.Params.tagline }}
+                <p class="tagline">{{ .Site.Params.tagline }}</p>
+                {{ end }}
+            </div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                {{ range .Site.Menus.main }}
+                <li><a href="{{ .URL }}">{{ .Pre }}{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+        </nav>
+    </div>
+</header>

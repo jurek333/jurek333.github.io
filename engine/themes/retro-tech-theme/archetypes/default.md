@@ -2,15 +2,9 @@
 title: "{{ replace .Name "-" " " | title }}"
 date: {{ .Date }}
 draft: true
-teamty:
-  - Z80
-znaczniki:
-  - Retro
-  - Z80
+author: "Your Name"
+category: []
+tags: []
 ---
 
-Intro
-
-<!--more-->
-
-Main content
+Start writing your post here...

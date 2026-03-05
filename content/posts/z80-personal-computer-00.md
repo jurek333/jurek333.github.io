@@ -2,11 +2,12 @@
 title: "Z80 Personal Computer"
 date: 2020-05-06T16:30:27+02:00
 draft: false
-dziedziny:
+tematy:
   - Z80PC
-zagadnienia:
+znaczniki:
   - Retro
   - CPU
+image: "/img/retro_pc.webp"
 ---
 
 Projekt 8 bitowego komputera osobistego opartego na procesorze Zilog Z80. Procesor ten trafił na rynek w 1976 roku. Jest on kompatybilny z Intelem 8080. Posiada 8-bitową szynę danych i 16-bitową szynę adresową. Najbardziej jest chyba znany z komputerów Sinclair ZX Spectrum i Elwro 800 Junior. Wciąż jest łatwo dostępny jako scalak DIP-40 i świetnie nadaje się do budowy domowego komputera.

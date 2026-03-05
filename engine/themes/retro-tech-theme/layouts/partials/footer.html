@@ -1,0 +1,15 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-content">
+            <p class="blink-cursor">_</p>
+            <p>&copy; {{ now.Year }} {{ .Site.Title }}. Built with <a href="https://gohugo.io">Hugo</a> & Retro Tech theme.</p>
+            {{ if .Site.Params.social }}
+            <div class="social-links">
+                {{ range .Site.Params.social }}
+                <a href="{{ .url }}" aria-label="{{ .name }}">{{ .name }}</a>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</footer>

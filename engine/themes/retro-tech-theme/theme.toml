@@ -1,0 +1,12 @@
+name = "Retro Tech"
+license = "MIT"
+licenselink = "https://github.com/yourusername/retro-tech-theme/blob/main/LICENSE"
+description = "A Hugo theme for technical blogs about retro electronics, low-level programming, and IT humor"
+homepage = "https://github.com/yourusername/retro-tech-theme"
+tags = ["blog", "technical", "retro", "electronics", "programming", "minimal"]
+features = ["responsive", "syntax-highlighting", "clean"]
+min_version = "0.112.0"
+
+[author]
+  name = "Jurek 333"
+  homepage = "https://jurek333.github.io"

@@ -2,11 +2,12 @@
 title: "Mini ekran dla Z80"
 date: 2020-05-11T19:44:45+02:00
 draft: false
-dziedziny:
+tematy:
   - Z80PC
-zagadnienia:
+znaczniki:
   - Retro
   - Arduino
+image: "/img/retro_pc.webp"
 ---
 
 Retro komputer odprawiający swoją magię w czeluściach scalaków bez wizualnej reprezentacji to nie najefektywniejsza rozrywka. Wykonam więc PoC z Arduino Micro i niewielkiego ekranu OLED *kartę graficzną* i ekran.

@@ -1,0 +1,42 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "main" }}
+<div class="list-page">
+    <header class="list-header">
+        <h1>{{ .Title }}</h1>
+        {{ if .Description }}
+        <p class="list-description">{{ .Description }}</p>
+        {{ end }}
+    </header>
+    
+    <div class="posts-list">
+        {{ range .Pages }}
+        <article class="post-card">
+            <div class="post-header">
+                <h2 class="post-title">
+                    <time class="post-date-prefix" datetime="{{ .Date.Format "2006 0102" }}">
+                        {{ .Date.Format "2006 0102" }}
+                    </time>
+                    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                </h2>
+            </div>
+            
+            {{ if .Summary }}
+            <div class="post-summary">
+                {{ .Summary }}
+            </div>
+            {{ end }}
+            
+            {{ if .Params.znaczniki }}
+            <div class="post-tags">
+                {{ range .Params.znaczniki }}
+                <span class="tag">#{{ . }}</span>
+                {{ end }}
+            </div>
+            {{ end }}
+            <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
+        </article>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

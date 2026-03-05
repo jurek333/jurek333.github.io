@@ -3,10 +3,11 @@ title: "Bus Monitor"
 date: 2020-05-10T09:54:19+02:00
 draft: false
 keywords: [arduino, mega2560, LCD]
-dziedziny:
+tematy:
   - Z80PC
-zagadnienia:
+znaczniki:
   - Arduino
+image: "/img/Z80.webp"
 ---
 
 Odpalając program na komputerze z Z80, ROM i RAM ciężko stwierdzić czy wszystko chodzi czy też nie. Przydałoby się mieć jakiś podgląd danych/adresów. Idealny byłby analizator stanów logicznych. Ale gdy takowego brak, można odgrzebać Arduino i wykonać sobie urządzenie zastępcze.

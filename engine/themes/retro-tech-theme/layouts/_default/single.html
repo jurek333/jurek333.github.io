@@ -1,0 +1,63 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "main" }}
+<article class="post-single">
+    <header class="post-header">
+        <h1 class="post-title">
+            <time class="post-date-prefix" datetime="{{ .Date.Format "2006 0102" }}">
+                {{ .Date.Format "2006 0102" }}
+            </time>
+            {{ .Title }}
+        </h1>
+        
+        <div>
+        <div class="post-meta">
+            {{ if .Params.author }}
+            <span class="author">
+                <span class="meta-icon">✍️</span> {{ .Params.author }}
+            </span>
+            {{ end }}
+            
+            {{ if .ReadingTime }}
+            <span class="reading-time">
+                <span class="meta-icon">⏱️</span> {{ .ReadingTime }} min read
+            </span>
+            {{ end }}
+        </div>
+        
+        {{ if .Params.znaczniki }}
+        <div class="post-tags">
+            {{ range .Params.znaczniki }}
+            <a href="{{ "znaczniki/" | relURL }}{{ . | urlize }}" class="tag">{{ . }}</a>
+            {{ end }}
+        </div>
+        {{ end }}
+        </div>
+    </header>
+    
+    <div class="post-content">
+        {{ if .Params.image }}
+        <img src="{{ .Params.image | relURL }}" alt="{{ .Title }}" class="featured-image">
+        {{ end }}
+        {{ .Content }}
+    </div>
+    
+    <footer class="post-footer">
+        <div class="post-nav">
+            {{ if .NextInSection }}
+            <div class="nav-item nav-prev">
+                <span class="nav-label">← Previous</span>
+                <a href="{{ .NextInSection.RelPermalink }}">{{ .NextInSection.Title }}</a>
+            </div>
+            {{ end }}
+            
+            {{ if .PrevInSection }}
+            <div class="nav-item nav-next">
+                <span class="nav-label">Next →</span>
+                <a href="{{ .PrevInSection.RelPermalink }}">{{ .PrevInSection.Title }}</a>
+            </div>
+            {{ end }}
+        </div>
+    </footer>
+</article>
+{{ end }}

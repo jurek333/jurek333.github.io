@@ -18,14 +18,14 @@
       </a>
     </div>
     <div class="post-description">
-      {{ .Summary | plainify }}
+      {{ .Summary }}
       <div class="footbar">
         <span><i class="far fa-clock"></i> {{ .ReadingTime }} min.
-          {{if (.Params.dziedziny) }}
-          / {{ delimit .Params.dziedziny "/ " }}
+          {{if (.Params.tematy) }}
+          / {{ delimit .Params.tematy "/ " }}
           {{ end }}
-          {{if (.Params.zagadnienia) }}
-          / {{ delimit .Params.zagadnienia " / " }}
+          {{if (.Params.znaczniki) }}
+          / {{ delimit .Params.znaczniki " / " }}
           {{ end }}
         </span>
         <div class="more-link">

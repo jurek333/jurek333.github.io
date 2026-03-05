@@ -2,13 +2,13 @@
 title: "GAL16V8 - logika"
 date: 2020-05-30T13:05:13+02:00
 draft: false
-dziedziny:
+tematy:
   - Z80PC
-zagadnienia:
+znaczniki:
   - Retro
   - FPGA
+image: "/img/Z80.webp"
 ---
-
 Procesor Z80 komunikując się z&nbsp;zewnętrznymi urządzeniami ustawia numer urządzenia na&nbsp;dolnym bajcie adresu, a&nbsp;zainteresowane urządzenie powinno na&nbsp;tej podstawie zacząć działać. Chcąc wprowadzić zewnętrzne dwa rejestry konfigurujące pracę komputera powinienem przypisać im&nbsp;odpowiednie 8&nbsp;bitowe adresy (np.&nbsp;0x00 i&nbsp;0x01) i&nbsp;w&nbsp;zależności, który będzie ustawiony podczas IOREQ, ten rejestr aktualizować wartościami z&nbsp;szyny danych.
 Mógłbym ułożyć kilka bramek logicznych które sprawdziły by&nbsp;czy adres wynosi 0x00 czy 0x01 i&nbsp;z&nbsp;sygnałem IOREQ tworzyć puls odświeżający właściwy rejestr, ale to&nbsp;oznacza dużo miejsca i zasilania dla wielu bramek logicznych. Zamiast tego użyję jednego układu scalonego: Generic Array Logic.
 

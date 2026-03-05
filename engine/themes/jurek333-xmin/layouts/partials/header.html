@@ -13,12 +13,21 @@
 </head>
 
 <body>
-  <nav>
-    <ul class="menu">
-      {{ range .Site.Menus.main }}
-      <li>
-        <a href="{{ .URL | relURL }}">{{ if (.Pre) }}{{ .Pre }}&nbsp;{{ end }}{{ .Name }}</a>
-      </li>
-      {{ end }}
-    </ul>
-  </nav>
+  <table class="header">
+    <tr>
+        <td>
+            <img src="{{ "/img/capybara_with_gradient_background_120_120.gif" | relURL }}" alt="tattooed capybara" class="logo" />
+        </td>
+        <td>
+            <nav>
+                <ul>
+                  {{ range .Site.Menus.main }}
+                  <li>
+                    <a href="{{ .URL | relURL }}">{{ if (.Pre) }}{{ .Pre }}<br/>{{ end }}{{ .Name }}</a>
+                  </li>
+                  {{ end }}
+                </ul>
+              </nav>
+        </td>
+    </tr>
+</table>
